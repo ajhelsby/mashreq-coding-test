@@ -19,7 +19,7 @@
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.checkstyle.version>3.2.1</maven.checkstyle.version>
+        <maven.checkstyle.version>3.4.0</maven.checkstyle.version>
         <springdoc.version>1.6.14</springdoc.version>
     </properties>
 
