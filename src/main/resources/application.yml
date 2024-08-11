@@ -1,0 +1,118 @@
+environment:
+  name: default
+
+app:
+  jwt:
+    expiry:
+      auth-token: 1800000         # 30 min (1800000) in milliseconds
+      refresh-token: 432000000    # 5 days in milliseconds
+      # time after which verification link expires (30 min)
+      email-verification: 1800000
+      # time after which forgot password link expires (30 min)
+      forgot-password: 1800000
+
+    # Security related
+    # An aes-128-cbc key generated at https://asecuritysite.com/encryption/keygen (take the "key" field)
+    secret: ${env.JWT_SECRET}
+
+  # Client web application's base URL, used in links emailed to user
+  web:
+    url: http://localhost:3000
+
+  cors:
+    allowed-origins: ${env.CORS_ALLOWED_ORIGIN}
+
+logging:
+  level:
+    com:
+      mashreq: INFO
+      zaxxer:
+        hikari: TRACE
+        hikari.HikariConfig: DEBUG
+    org:
+      springframework: INFO
+
+openapi:
+  password: ${env.OPENAPI_PASSWORD}
+  user: ${env.OPENAPI_USERNAME}
+
+server:
+  compression:
+    # Enable GZip compression to save bandwidth
+    # Enable response compression
+    enabled: true
+    # The comma-separated list of mime types that should be compressed
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    # Compress the response only if the response size is at least 2KB
+    min-response-size: 2048
+
+  # Enable HTTP/2 support, if the current environment supports it
+  http2:
+    enabled: true
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://${env.DATABASE_HOSTNAME}:5432/${env.DATABASE_NAME}
+    username: ${env.DATABASE_USERNAME}
+    password: ${env.DATABASE_PASSWORD}
+
+    hikari:
+      # connection pooling performance improvements, but you will need manual fetch for lazyload entity
+      # keep it false (https://vladmihalcea.com/the-anatomy-of-connection-pooling/)
+      auto-commit: false
+      cache-prep-stmts: false
+      connection-timeout: 30000
+      idle-timeout: 30000
+      leak-detection-threshold: 30000
+      max-lifetime: 1800000
+      # Optimal performance idle and max pool set to 10
+      # https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
+      maximum-pool-size: 10
+      minimum-idle: 10
+      pool-name: HikariPool
+
+  jackson:
+    # Controls the inclusion of properties during serialization. Configured with one of the values in
+    # Jackson's JsonInclude.Include enumeration.
+    default-property-inclusion: non_null
+    deserialization:
+      ACCEPT_SINGLE_VALUE_AS_ARRAY: true
+      FAIL_ON_IGNORED_PROPERTIES: false
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    mapper:
+      DEFAULT_VIEW_INCLUSION: false
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+      indent_output: true
+    property-naming-strategy: SNAKE_CASE
+
+  jpa:
+    hibernate:
+      connection:
+        provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+      # Hibernate ddl auto (create, create-drop, validate, update)
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        connection:
+          # connection pooling performance improvements
+          provider_disables_autocommit: true
+        # The SQL dialect makes Hibernate generate better SQL for the chosen database
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+      jdbc:
+        lob:
+          non_contextual_creation: true
+    show-sql: false
+  main:
+    banner-mode: off
+  data:
+    web:
+      pageable:
+        # frontend to start page number 1 (default with 'false' is 0)
+        one-indexed-parameters: true
