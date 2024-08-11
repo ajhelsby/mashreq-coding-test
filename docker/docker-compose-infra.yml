@@ -1,0 +1,15 @@
+version: '3.5'
+
+networks:
+  mashreqnetwork:
+    driver: bridge
+
+services:
+  postgres:
+    image: ajhelsby/postgis
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: mashreq
+      POSTGRES_PASSWORD: RaN60M1@3
+      POSTGRES_DB: mashreq
