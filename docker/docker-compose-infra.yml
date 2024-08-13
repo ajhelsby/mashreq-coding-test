@@ -6,7 +6,7 @@ networks:
 
 services:
   postgres:
-    image: ajhelsby/postgis
+    image: postgres
     ports:
       - "5432:5432"
     environment:
