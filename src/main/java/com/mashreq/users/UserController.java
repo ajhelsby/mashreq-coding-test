@@ -23,12 +23,6 @@ public class UserController extends BaseApiV1Controller {
     this.userService = userService;
   }
 
-
-  /**
-   *
-   * @param payload
-   * @return
-   */
   @PostMapping(value = "users/init", consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Users successfully created"),

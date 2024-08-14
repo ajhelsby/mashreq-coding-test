@@ -27,7 +27,7 @@ public class RoomController extends BaseApiV1Controller {
       @ApiResponse(responseCode = "500", description = "Internal error"),
       @ApiResponse(responseCode = "401", description = "When bad credentials provided.")
   })
-  public ResponseEntity<List<RoomResult>> getRooms() {
+  public ResponseEntity<List<RoomResult>> list() {
     return ResponseEntity.ok(roomService.getRooms());
   }
 }
