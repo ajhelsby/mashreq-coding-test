@@ -1,9 +1,13 @@
 package com.mashreq.configs;
 
 import com.mashreq.authentication.jpa.JpaSecurityConfig;
+import com.mashreq.security.SimpleAccessDeniedHandler;
+import com.mashreq.security.SimpleAuthenticationEntryPoint;
+import com.mashreq.security.jwt.JwsService;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,16 +25,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import com.mashreq.authentication.jpa.JpaUserDetailsService;
-import com.mashreq.security.SimpleAuthenticationEntryPoint;
-import com.mashreq.security.SimpleAccessDeniedHandler;
-import com.mashreq.security.jwt.JwsService;
 
 /**
  * Main security configuration for the application.
@@ -65,7 +66,7 @@ public class SecurityConfiguration {
   public JpaSecurityConfig jpaSecurityConfig(
       SimpleAuthenticationEntryPoint authenticationErrorHandler,
       SimpleAccessDeniedHandler accessDeniedHandler,
-      JpaUserDetailsService userDetailsService,
+      @Qualifier("jpaUserDetailsService") UserDetailsService userDetailsService,
       JwsService jwsService,
       PasswordEncoder passwordEncoder) {
 

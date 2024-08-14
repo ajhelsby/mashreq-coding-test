@@ -48,16 +48,9 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
     log.info("JpaSecurityConfig created");
   }
 
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    auth
-        .userDetailsService(userDetailsService)
-        .passwordEncoder(passwordEncoder);
-  }
-
   @Bean
   @Override
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)

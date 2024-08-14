@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
@@ -27,14 +28,20 @@ import org.springframework.web.filter.GenericFilterBean;
  *
  */
 @Configuration
+@EnableWebSecurity
 public class BaseSecurityConfig {
 
   public static final String[] PUBLIC = new String[]{
       "/health",
       "/actuator/health",
-      "/api/auth/signup",
-      "/api/auth/login",
-      "/api/users/init"
+      "/api/v1/auth/**",
+      "/api/v1/users/init",
+      "/swagger-resources/**",
+      "/swagger-ui.html",
+      "/swagger-ui/index.html",
+      "/swagger-ui/**",
+      "/v3/api-docs/**",
+      "/login"
   };
 
   private final SimpleAuthenticationEntryPoint authenticationErrorHandler;
@@ -49,7 +56,7 @@ public class BaseSecurityConfig {
 
   @SneakyThrows
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
@@ -86,7 +93,6 @@ public class BaseSecurityConfig {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException {
-      // Implement your token authentication logic here
       chain.doFilter(request, response);
     }
   }

@@ -5,6 +5,7 @@ import com.mashreq.authentication.payloads.SignupPayload;
 import com.mashreq.common.exceptions.EmailTakenException;
 import com.mashreq.users.User;
 import com.mashreq.users.UserRepository;
+import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,8 +47,10 @@ public class JpaAuthenticationService extends AbstractAuthenticationService {
 
     User userToRegister = payload.toEntity();
     userToRegister.setPassword(passwordEncoder.encode(payload.password()));
+    userToRegister.setCreatedOn(Instant.now());
+    userToRegister.setModifiedOn(Instant.now());
 
-    User created = userRepository.save(userToRegister);
+    userRepository.save(userToRegister);
   }
 
 }

@@ -22,6 +22,10 @@ app:
   cors:
     allowed-origins: ${env.CORS_ALLOWED_ORIGIN}
 
+modules:
+  #  Auth can be made extensible, changing this variable
+  auth: JPA
+
 logging:
   level:
     com:
