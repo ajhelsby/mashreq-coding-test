@@ -26,4 +26,11 @@ public abstract class AbstractAuthenticationService implements AuthenticationSer
         .orElseThrow(
             () -> new ResourceNotFoundException(I18n.getMessage("error.user.notFound")));
   }
+
+  protected User getUserByUsername(String username) {
+    return userRepository
+        .findOneByEmail(username)
+        .orElseThrow(
+            () -> new ResourceNotFoundException(I18n.getMessage("error.user.notFound")));
+  }
 }

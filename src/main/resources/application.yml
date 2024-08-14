@@ -94,7 +94,7 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
       indent_output: true
-    property-naming-strategy: SNAKE_CASE
+    property-naming-strategy: LOWER_CAMEL_CASE
 
   jpa:
     hibernate:

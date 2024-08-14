@@ -41,6 +41,8 @@ public abstract class AbstractControllerTest {
 
   protected static final String LINK_URL = "https://localhost:8080";
   protected static final String SIGNUP_URL = "/api/v1/auth/signup";
+  protected static final String LOGIN_URL = "/api/v1/auth/login";
+  protected static final String USERS_INIT_URL = "/api/v1/users/init";
   public static final String ACCOUNT_PASSWORD = "Un1tT3st";
   protected String userEmail;
   protected String adminEmail;
