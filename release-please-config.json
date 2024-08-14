@@ -1,0 +1,73 @@
+{
+  "bootstrap-sha": "198336b098f167f858675235214cc907ede10182",
+  "packages": {
+    ".": {
+      "release-type": "java",
+      "monorepo-tags": false,
+      "include-component-in-tag": false,
+      "prerelease": false,
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "extra-files": [
+        "README.md"
+      ],
+      "changelog-sections": [
+        {
+          "type": "feat",
+          "hidden": false,
+          "section": "Features"
+        },
+        {
+          "type": "fix",
+          "hidden": false,
+          "section": "Bug Fixes"
+        },
+        {
+          "type": "chore",
+          "hidden": false,
+          "section": "Other"
+        },
+        {
+          "type": "perf",
+          "hidden": false,
+          "section": "Performance"
+        },
+        {
+          "type": "docs",
+          "hidden": false,
+          "section": "Docs"
+        },
+        {
+          "type": "build",
+          "hidden": false,
+          "section": "Build"
+        },
+        {
+          "type": "deps",
+          "hidden": false,
+          "section": "Dependency Updates"
+        },
+        {
+          "type": "ci",
+          "hidden": false,
+          "section": "CI"
+        },
+        {
+          "type": "refactor",
+          "hidden": false,
+          "section": "Refactoring"
+        },
+        {
+          "type": "style",
+          "hidden": false,
+          "section": "Styling"
+        },
+        {
+          "type": "test",
+          "hidden": false,
+          "section": "Tests"
+        }
+      ]
+    }
+  }
+}
