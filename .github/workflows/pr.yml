@@ -40,6 +40,8 @@ jobs:
       POSTGRES_DB: mashreq
       POSTGRES_USER: mashreq
       POSTGRES_PASSWORD: RaN60M1
+      OPENAPI_USERNAME: openapi
+      OPENAPI_PASSWORD: openapi
       JWT_SECRET: 2C2D3245018E44B39D5D86049BE565F3
       CORS_ALLOWED_ORIGIN: http://localhost:3000
     steps:
