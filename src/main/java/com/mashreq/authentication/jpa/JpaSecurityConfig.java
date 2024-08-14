@@ -48,6 +48,14 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
     log.info("JpaSecurityConfig created");
   }
 
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    // configure security authentication to use our implementation
+    auth
+        .userDetailsService(userDetailsService)
+        .passwordEncoder(passwordEncoder);
+  }
+
   @Bean
   @Override
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

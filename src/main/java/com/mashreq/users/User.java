@@ -1,6 +1,7 @@
 package com.mashreq.users;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mashreq.common.models.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,6 +31,7 @@ public class User extends BaseEntity {
   @Column(name = "email", nullable = false, length = 100, unique = true)
   private String email;
 
+  @JsonIgnore
   @Column(name = "password", nullable = false)
   private String password;
 

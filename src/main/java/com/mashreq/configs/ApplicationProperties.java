@@ -119,6 +119,8 @@ public class ApplicationProperties {
     public static class Expiry {
       // Expiration milliseconds for authentication token  (30 min)
       private long authToken = 1800000L;
+      // Expiration milliseconds for refresh token (5 days)
+      private long refreshToken = 432000000L;
     }
   }
 }

@@ -13,11 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Need to use @Isolated annotation as we need to verify mailService usage as this is mocked in
- * AbstractControllerTest class.
- *
- * <p>This to avoid resetting of the mock in parallel unit tests where one unit test can reset
- * mocked mailService while other one still using it.
+ * This is a test to validate all permutations of signup
  */
 @Isolated
 class SignupControllerTest extends AbstractControllerTest {

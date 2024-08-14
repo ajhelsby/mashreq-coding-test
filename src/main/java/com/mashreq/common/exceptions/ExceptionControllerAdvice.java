@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,25 @@ public class ExceptionControllerAdvice {
   }
 
   /**
+   * Handle an authentication exception and return a unauthorized status code.
+   *
+   * @param ex a AuthenticationException
+   * @return a ResponseEntity with a status code of 401 and body of the exception message
+   */
+  @ExceptionHandler(AuthenticationException.class)
+  public ResponseEntity<String> handleAuthenticationException(final AuthenticationException ex) {
+    log.error(ex.getMessage());
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<String> handleAccessDenied(AccessDeniedException ex)
+      throws AccessDeniedException {
+    log.error("AccessDeniedException exception: {}", ex.getMessage());
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+  }
+
+  /**
    * Handles Validation exception.
    *
    * @param ex a MethodArgumentNotValidException
@@ -47,14 +67,14 @@ public class ExceptionControllerAdvice {
   public Map<String, String> validation(MethodArgumentNotValidException ex) {
     Map<String, String> errors = new HashMap<>();
     ex.getBindingResult()
-        .getAllErrors()
-        .forEach(error -> {
-          // need snake case field name to be returned to FE
-          var fieldName = CaseFormat.LOWER_CAMEL.to(
-              CaseFormat.LOWER_UNDERSCORE, ((FieldError) error).getField());
-          var errorMessage = error.getDefaultMessage();
-          errors.put(fieldName, errorMessage);
-        });
+      .getAllErrors()
+      .forEach(error -> {
+        // need snake case field name to be returned to FE
+        var fieldName = CaseFormat.LOWER_CAMEL.to(
+            CaseFormat.LOWER_UNDERSCORE, ((FieldError) error).getField());
+        var errorMessage = error.getDefaultMessage();
+        errors.put(fieldName, errorMessage);
+      });
     return errors;
   }
 
