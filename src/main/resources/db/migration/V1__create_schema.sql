@@ -8,7 +8,6 @@ CREATE TABLE "users"
     password               VARCHAR(255)             DEFAULT NULL,
     first_name             VARCHAR(45)  NOT NULL,
     last_name              VARCHAR(45)  NOT NULL,
-    external_id            VARCHAR(150)             DEFAULT NULL UNIQUE,
     last_logged_in_on      TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     credentials_updated_on TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     created_on             TIMESTAMP WITH TIME ZONE DEFAULT NULL,

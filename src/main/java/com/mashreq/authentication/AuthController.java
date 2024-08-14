@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST API endpoints to handle authentication related functionalities.
  */
 @RestController
-@RequestMapping(path = "/api/auth")
+@RequestMapping(path = "/auth")
 @Slf4j
 public class AuthController {
 

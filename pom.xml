@@ -28,6 +28,7 @@
         <spring-dotenv.version>2.5.4</spring-dotenv.version>
         <google-java-format.version>1.15.0</google-java-format.version>
         <checkstyle.version>10.17.0</checkstyle.version>
+        <flyway.version>10.17.0</flyway.version>
     </properties>
 
     <dependencyManagement>
@@ -75,7 +76,8 @@
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
 
         <!-- Misc -->
@@ -130,18 +132,13 @@
         <!-- Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-security</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-data-rest</artifactId>
-            <version>${springdoc.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <version>2.6.0</version>
         </dependency>
 
         <!-- Testing -->
