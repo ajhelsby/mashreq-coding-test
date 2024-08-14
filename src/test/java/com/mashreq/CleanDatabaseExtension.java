@@ -39,7 +39,6 @@ public class CleanDatabaseExtension
     // or user DELETE statements per entity
     em.createNativeQuery(
         "TRUNCATE TABLE users").executeUpdate();
-    //em.createQuery("DELETE FROM User").executeUpdate();
 
     transaction.commit();
     em.close();
