@@ -1,5 +1,6 @@
-package com.mashreq.authentication;
+package com.mashreq.authentication.jpa;
 
+import com.mashreq.authentication.AbstractAuthenticationService;
 import com.mashreq.authentication.payloads.SignupPayload;
 import com.mashreq.common.exceptions.EmailTakenException;
 import com.mashreq.users.User;
