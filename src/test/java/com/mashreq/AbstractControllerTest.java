@@ -7,6 +7,8 @@ import com.mashreq.users.User;
 import jakarta.persistence.EntityManagerFactory;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,7 @@ public abstract class AbstractControllerTest {
   protected static final String LINK_URL = "https://localhost:8080";
   protected static final String SIGNUP_URL = "/api/v1/auth/signup";
   protected static final String LOGIN_URL = "/api/v1/auth/login";
+  protected static final String ROOMS_URL = "/api/v1/rooms";
   protected static final String USERS_INIT_URL = "/api/v1/users/init";
   public static final String ACCOUNT_PASSWORD = "Un1tT3st";
   protected String userEmail;
@@ -116,6 +119,26 @@ public abstract class AbstractControllerTest {
             .password(
                 passwordEncoder.encode(StringUtils.hasText(password) ? password : ACCOUNT_PASSWORD))
             .build());
+  }
+
+  public AuthenticatedUser givenAuthUser() {
+    return givenAuthUser(UUID.randomUUID(), generateEmail());
+  }
+
+  public AuthenticatedUser givenAuthUser(
+      UUID userId,
+      String email) {
+
+    // don't need to persist auth user, as we are not hitting UserDetails service to check
+    var user = User.builder()
+                   .email(email)
+                   .firstName("Auth")
+                   .lastName("User")
+                   .password(passwordEncoder.encode(ACCOUNT_PASSWORD))
+                   .build();
+    user.setId(userId);
+
+    return new AuthenticatedUser(user);
   }
 
   protected String getJsonValue(ResultActions result, String jsonPath)
