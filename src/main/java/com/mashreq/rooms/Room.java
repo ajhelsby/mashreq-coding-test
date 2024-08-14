@@ -24,7 +24,7 @@ import lombok.Setter;
 public class Room extends BaseEntity {
   private String name;
 
-  private String location;
+  private String desription;
 
   private int capacity;
 }
