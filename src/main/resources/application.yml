@@ -22,6 +22,10 @@ app:
   cors:
     allowed-origins: ${env.CORS_ALLOWED_ORIGIN}
 
+modules:
+  #  Auth can be made extensible, changing this variable
+  auth: JPA
+
 logging:
   level:
     com:
@@ -35,6 +39,9 @@ logging:
 openapi:
   password: ${env.OPENAPI_PASSWORD}
   user: ${env.OPENAPI_USERNAME}
+
+springdoc:
+  show-actuator: true
 
 server:
   compression:
@@ -55,8 +62,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://${env.DATABASE_HOSTNAME}:5432/${env.DATABASE_NAME}
-    username: ${env.DATABASE_USERNAME}
+    url: jdbc:postgresql://${env.DATABASE_HOSTNAME:localhost}:5432/${env.DATABASE_NAME:mashreq}
+    username: ${env.DATABASE_USERNAME:mashreq}
     password: ${env.DATABASE_PASSWORD}
 
     hikari:
