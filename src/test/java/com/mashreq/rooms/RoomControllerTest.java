@@ -27,7 +27,7 @@ public class RoomControllerTest extends AbstractControllerTest {
   void testRooms_invalidAuth_shouldReturn401() throws Exception {
     // GIVEN
     // WHEN
-    var result = whenCallEndpoint_rooms(givenAuthUser());
+    var result = whenCallEndpoint_rooms(null);
     // THEN
     result.andExpect(status().isUnauthorized());
   }
