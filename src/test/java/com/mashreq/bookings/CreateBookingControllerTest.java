@@ -88,6 +88,25 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
   }
 
   @Test
+  void testCreateBooking_duringMaintenance_shouldFailWithErrorMessage() throws Exception {
+    // GIVEN
+    var user = givenUser();
+    var authUser = givenAuthUser(user);
+    var numberOfPeople = 20;
+    Instant startTime = createInstantToday(8, 0);
+    Instant endTime = createInstantToday(9, 0);
+    givenBooking(user, "Strive", 15, startTime, endTime);
+    var payload = givenPayload(startTime, endTime, numberOfPeople);
+
+    // WHEN
+    var result = whenCallEndpoint_createBooking(authUser, payload);
+
+    // THEN
+    result.andExpect(status().isNotFound());
+    result.andExpect(content().string("No rooms available due to maintenance"));
+  }
+
+  @Test
   void testCreateBooking_allBookingTakenCrossingTime_shouldFailWithErrorMessage() throws Exception {
     // GIVEN
     var user = givenUser();
@@ -248,6 +267,8 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
   private String givenPayload(Instant startTime, Instant endTime, int numberOfPeople) {
     return """
         {
+          "name": "Meeting Name",
+          "description": "Meeting Description",
           "startTime":"%s",
           "endTime":"%s",
           "numberOfPeople": %s
@@ -261,10 +282,12 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     Booking booking = Booking.builder()
                              .startTime(startTime)
                              .endTime(endTime)
-                             .user(user)
-                             .room(room)
                              .numberOfPeople(noOfPeople)
                              .build();
+    booking.setUser(user);
+    booking.setRoom(room);
+    booking.setName("Meeting Name");
+    booking.setDescription("Meeting Description");
     return bookingRepository.save(booking);
   }
 

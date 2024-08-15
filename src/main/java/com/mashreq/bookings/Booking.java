@@ -28,13 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "bookings")
-public class Booking extends BaseEntity {
-
-  @ManyToOne
-  private User user;
-
-  @ManyToOne
-  private Room room;
+public class Booking extends AbstractBooking {
 
   @Column(name = "number_of_people", nullable = false)
   private int numberOfPeople;
@@ -44,7 +38,4 @@ public class Booking extends BaseEntity {
 
   @Column(name = "end_time", nullable = false)
   private Instant endTime;
-
-  @Enumerated(EnumType.STRING)
-  private BookingStatus status = BookingStatus.BOOKED;
 }

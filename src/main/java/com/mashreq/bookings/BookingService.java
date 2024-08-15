@@ -28,14 +28,8 @@ public class BookingService {
     User user = userService.getUserByUsername(authenticatedUser.getUsername());
     // Get the available rooms in the timeframe with enough capacity
     Room room = roomService.getAvailableRoomWithOptimumCapacity(payload.startTime(), payload.endTime(), payload.numberOfPeople());
-
-    Booking booking = Booking.builder()
-                             .room(room)
-                             .user(user)
-                             .startTime(payload.startTime())
-                             .endTime(payload.endTime())
-                             .numberOfPeople(payload.numberOfPeople())
-                             .build();
+    // Build a booking from the request
+    Booking booking = BookingRequest.toBooking(payload, user, room);
     bookingRepository.save(booking);
     return BookingResult.toResult(booking);
   }
