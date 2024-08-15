@@ -33,17 +33,14 @@ public record SignupPayload(
     @ValidPassword(groups = OrderOne.class)
     String password,
 
-    @JsonProperty("confirm_password")
     @NotBlank(message = "{error.confirmPassword.required}")
     @ValidPassword(groups = OrderOne.class)
     String confirmPassword,
 
-    @JsonProperty("first_name")
     @Size(min = 1, max = 45, message = "{error.firstName.length}")
     @NotNull(message = "{error.firstName.required}")
     String firstName,
 
-    @JsonProperty("last_name")
     @Size(min = 1, max = 45, message = "{error.lastName.length}")
     @NotNull(message = "{error.lastName.required}")
     String lastName

@@ -19,11 +19,9 @@ public record UserAddPayload(
     @ValidPassword
     @NotBlank(message = "{error.password.required}")
     String password,
-    @JsonProperty("first_name")
     @Size(min = 1, max = 45, message = "{error.firstName.length}")
     @NotNull(message = "{error.firstName.required}")
     String firstName,
-    @JsonProperty("last_name")
     @Size(min = 1, max = 45, message = "{error.lastName.length}")
     @NotNull(message = "{error.lastName.required}")
     String lastName

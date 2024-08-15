@@ -37,8 +37,8 @@ public class CleanDatabaseExtension
 
     // need to truncate all at the same time due to foreign key constraint
     // or user DELETE statements per entity
-    em.createNativeQuery(
-        "TRUNCATE TABLE users").executeUpdate();
+    em.createNativeQuery("DELETE FROM bookings").executeUpdate();
+    em.createNativeQuery("DELETE FROM users").executeUpdate();
 
     transaction.commit();
     em.close();

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,6 +29,12 @@ public class ExceptionControllerAdvice {
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<String> resourceNotFound(ResourceNotFoundException ex) {
     log.error("ResourceNotFoundException exception: {}", ex.getMessage());
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(NoRoomsAvailableException.class)
+  public ResponseEntity<String> resourceNotFound(NoRoomsAvailableException ex) {
+    log.error("NoRoomsAvailableException exception: {}", ex.getMessage());
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
   }
 
@@ -69,11 +76,22 @@ public class ExceptionControllerAdvice {
     ex.getBindingResult()
       .getAllErrors()
       .forEach(error -> {
-        // need snake case field name to be returned to FE
-        var fieldName = CaseFormat.LOWER_CAMEL.to(
-            CaseFormat.LOWER_UNDERSCORE, ((FieldError) error).getField());
-        var errorMessage = error.getDefaultMessage();
-        errors.put(fieldName, errorMessage);
+        String errorMessage = error.getDefaultMessage();
+
+        if (error instanceof FieldError) {
+          // Handle field specific errors
+          FieldError fieldError = (FieldError) error;
+          String fieldName = fieldError.getField();
+          errors.put(fieldName, errorMessage);
+
+        } else if (error instanceof ObjectError) {
+          // Handle non-field-specific errors here if needed
+          String objectName = ((ObjectError) error).getObjectName();
+          // Convert objectName to camelCase
+          String lowerCamelObjectName = CaseFormat.UPPER_CAMEL
+              .to(CaseFormat.LOWER_CAMEL, objectName);
+          errors.put(lowerCamelObjectName, errorMessage);
+        }
       });
     return errors;
   }

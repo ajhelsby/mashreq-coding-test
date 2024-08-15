@@ -137,10 +137,10 @@ class SignupControllerTest extends AbstractControllerTest {
     return """    
         {
            "email": "%s",
-           "first_name": "Test",
-           "last_name": "User",
+           "firstName": "Test",
+           "lastName": "User",
            "password": "%s",
-           "confirm_password": "%s"
+           "confirmPassword": "%s"
            }
         """.formatted(email,
         Optional.ofNullable(password).orElse(defaultPassword),

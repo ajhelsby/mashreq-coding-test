@@ -1,7 +1,7 @@
 package com.mashreq.rooms;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,9 +24,11 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
     ORDER BY r.capacity ASC
     LIMIT 1
 """)
-  Room findBestAvailableRoom(
-      @Param("startTime") Instant desiredStartTime,
-      @Param("endTime") Instant desiredEndTime,
+  Optional<Room> findBestAvailableRoom(
+      @Param("startTime") Instant startTime,
+      @Param("endTime") Instant endTime,
       @Param("numberOfPeople") int numberOfPeople
   );
+
+  Room findByName(String roomName);
 }

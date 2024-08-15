@@ -1,8 +1,10 @@
 package com.mashreq.rooms;
 
+import com.mashreq.common.exceptions.NoRoomsAvailableException;
 import com.mashreq.rooms.results.RoomResult;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +23,13 @@ public class RoomService {
 
   public Room getAvailableRoomWithOptimumCapacity(
       Instant startTime, Instant endTime, int numberOfPeople) {
-    Room room = roomRepository.findBestAvailableRoom(startTime, endTime, numberOfPeople);
-    if (room == null) {
-      //throw new Exception("No available rooms at that time");
+
+    Optional<Room> roomOptional = roomRepository.findBestAvailableRoom(startTime, endTime, numberOfPeople);
+
+    if (roomOptional.isEmpty()) {
+      throw new NoRoomsAvailableException(startTime, endTime, numberOfPeople);
     }
-    return room;
+
+    return roomOptional.get();
   }
 }

@@ -6,8 +6,6 @@ import org.springframework.util.StringUtils;
 
 /**
  * Utility class for unit tests
- *
- * @author P Maksymchuk
  */
 public final class TestUtils {
 

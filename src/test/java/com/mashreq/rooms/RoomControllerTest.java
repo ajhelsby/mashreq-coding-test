@@ -9,12 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * This is a test to validate all permutations of signup
+ * This is a test to test retrieving room information
  */
 public class RoomControllerTest extends AbstractControllerTest {
 
   @Test
-  void testRooms_shouldReturn200() throws Exception {
+  void testGetRooms_shouldReturn200() throws Exception {
     // GIVEN
     // WHEN
     var result = whenCallEndpoint_rooms(givenAuthUser());
@@ -24,7 +24,7 @@ public class RoomControllerTest extends AbstractControllerTest {
   }
 
   @Test
-  void testRooms_invalidAuth_shouldReturn401() throws Exception {
+  void testGetRooms_invalidAuth_shouldReturn401() throws Exception {
     // GIVEN
     // WHEN
     var result = whenCallEndpoint_rooms(null);
