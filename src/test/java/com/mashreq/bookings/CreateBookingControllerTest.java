@@ -1,30 +1,17 @@
 package com.mashreq.bookings;
 
-import com.mashreq.AbstractControllerTest;
-import com.mashreq.rooms.Room;
-import com.mashreq.rooms.RoomRepository;
-import com.mashreq.security.AuthenticatedUser;
-import com.mashreq.users.User;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CreateBookingControllerTest extends AbstractControllerTest {
-
-  @Autowired
-  protected BookingRepository bookingRepository;
-  @Autowired
-  protected RoomRepository roomRepository;
+@Isolated
+public class CreateBookingControllerTest extends AbstractBookingControllerTest {
 
   @ParameterizedTest
   @MethodSource("com.mashreq.bookings.TestBookingUtils#personsAndRoom")
@@ -43,7 +30,7 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     var result = whenCallEndpoint_createBooking(authUser, payload);
 
     // THEN
-    result.andExpect(status().isOk());
+    result.andExpect(status().isCreated());
     result.andExpect(jsonPath("$.room.name").value(roomName));
   }
 
@@ -65,7 +52,7 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     var result = whenCallEndpoint_createBooking(authUser, payload);
 
     // THEN
-    result.andExpect(status().isOk());
+    result.andExpect(status().isCreated());
     result.andExpect(jsonPath("$.room.name").value(bestRoomName));
   }
 
@@ -260,53 +247,5 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // THEN
     result.andExpect(status().isBadRequest());
     result.andExpect(jsonPath("$.numberOfPeople").value("Number of people must be between 2 and the maximum room capacity"));
-  }
-
-  private ResultActions whenCallEndpoint_createBooking(AuthenticatedUser principal, String payload)
-      throws Exception {
-    return callPost(principal, BOOKINGS_URL, payload);
-  }
-
-  private String givenPayload(LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
-    return """
-        {
-          "name": "Meeting Name",
-          "description": "Meeting Description",
-          "startTime":"%s",
-          "endTime":"%s",
-          "numberOfPeople": %s
-        }
-        """.formatted(startTime.toString(), endTime.toString(), String.valueOf(numberOfPeople));
-  }
-
-  private Booking givenBooking(
-      User user, String roomName, int noOfPeople, LocalDateTime startTime, LocalDateTime endTime) {
-    Room room = roomRepository.findByName(roomName);
-    Booking booking = Booking.builder()
-                             .startTime(startTime)
-                             .endTime(endTime)
-                             .numberOfPeople(noOfPeople)
-                             .build();
-    booking.setUser(user);
-    booking.setRoom(room);
-    booking.setName("Meeting Name");
-    booking.setDescription("Meeting Description");
-    return bookingRepository.save(booking);
-  }
-
-  private LocalDateTime createLocalDateTimeToday(int hour, int min) {
-    return LocalDate.now()
-                    .atTime(hour, min)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
-  }
-
-  private LocalDateTime createLocalDateTimeOnDay(int addDays, int hour, int min) {
-    return LocalDate.now()
-                    .plusDays(addDays)
-                    .atTime(hour, min)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
-
   }
 }

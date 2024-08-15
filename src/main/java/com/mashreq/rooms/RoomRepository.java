@@ -22,6 +22,7 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
         WHERE b.room_id = r.id
         AND b.start_time < :endTime
         AND b.end_time > :startTime
+        AND b.status != 'CANCELLED'
     )
     AND NOT EXISTS (
         SELECT 1
@@ -29,6 +30,7 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
         WHERE rb.room_id = r.id
         AND rb.start_time < (:endTimeLocal)::TIME  -- Convert endTime to TIME
         AND rb.end_time > (:startTimeLocal)::TIME  -- Convert startTime to TIME
+        AND rb.status != 'CANCELLED'
     )
     ORDER BY r.capacity ASC
     LIMIT 1
