@@ -5,6 +5,7 @@ import com.mashreq.bookings.results.BookingResult;
 import com.mashreq.common.I18n;
 import com.mashreq.common.TimeUtils;
 import com.mashreq.common.exceptions.AuthenticationException;
+import com.mashreq.common.exceptions.BookingFailedException;
 import com.mashreq.common.exceptions.MaintenanceInProgressException;
 import com.mashreq.common.exceptions.NoRoomsAvailableException;
 import com.mashreq.common.exceptions.ResourceNotFoundException;
@@ -13,9 +14,10 @@ import com.mashreq.rooms.RoomService;
 import com.mashreq.security.AuthenticatedUser;
 import com.mashreq.users.User;
 import com.mashreq.users.UserService;
+import jakarta.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
+import org.springframework.dao.OptimisticLockingFailureException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 public class BookingService {
+
+  private static final int MAX_RETRIES = 3;
 
   private final RecurringBookingRepository recurringBookingRepository;
   private final BookingRepository bookingRepository;
@@ -65,20 +69,31 @@ public class BookingService {
   @Transactional
   public BookingResult createBooking(AuthenticatedUser authenticatedUser, BookingRequest payload)
       throws NoRoomsAvailableException {
-    try {
-      User user = userService.getUserByUsername(authenticatedUser.getUsername());
-      Room room = roomService.getAvailableRoomWithOptimumCapacity(payload.startTime(), payload.endTime(), payload.numberOfPeople());
+    int retryCount = 0;
 
-      Booking booking = BookingRequest.toBooking(payload, user, room);
-      bookingRepository.save(booking);
+    while (retryCount < MAX_RETRIES) {
+      try {
+        User user = userService.getUserByUsername(authenticatedUser.getUsername());
+        Room room = roomService.getAvailableRoomWithOptimumCapacity(payload.startTime(), payload.endTime(), payload.numberOfPeople());
 
-      return BookingResult.toResult(booking);
+        Booking booking = BookingRequest.toBooking(payload, user, room);
+        bookingRepository.save(booking);
 
-    } catch (NoRoomsAvailableException e) {
-      log.warn("No available rooms found for the given time and capacity. Checking recurring bookings...");
-      checkRecurringMaintenanceBooking(payload.startTime(), payload.endTime(), payload.numberOfPeople());
-      throw e; // Re-throw to signal failure
+        return BookingResult.toResult(booking);
+
+      } catch (OptimisticLockException e) {
+        retryCount++;
+        if (retryCount >= MAX_RETRIES) {
+          log.error("Failed to create booking after " + MAX_RETRIES + " attempts", e);
+          throw new BookingFailedException(payload.startTime(), payload.endTime(), payload.numberOfPeople());
+        }
+      } catch (NoRoomsAvailableException e) {
+        log.warn("No available rooms found for the given time and capacity. Checking recurring bookings...");
+        checkRecurringMaintenanceBooking(payload.startTime(), payload.endTime(), payload.numberOfPeople());
+        throw e; // Re-throw to signal failure
+      }
     }
+    throw new BookingFailedException(payload.startTime(), payload.endTime(), payload.numberOfPeople());
   }
 
   /**

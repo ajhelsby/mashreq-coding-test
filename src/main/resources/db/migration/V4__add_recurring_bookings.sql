@@ -1,12 +1,13 @@
 CREATE TABLE recurring_bookings
 (
     id           uuid                     DEFAULT uuid_generate_v4() PRIMARY KEY,
+    version      BIGINT NOT NULL          DEFAULT 0,
     user_id      uuid,
-    room_id      uuid NOT NULL,
+    room_id      uuid   NOT NULL,
     name         VARCHAR(100),
     description  VARCHAR(255),
-    start_time   TIME NOT NULL,
-    end_time     TIME NOT NULL,
+    start_time   TIME   NOT NULL,
+    end_time     TIME   NOT NULL,
     booking_type VARCHAR(100)             DEFAULT 'MAINTENANCE',
     status       TEXT                     DEFAULT 'BOOKED',
     created_on   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -14,6 +15,8 @@ CREATE TABLE recurring_bookings
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (room_id) REFERENCES rooms (id)
 );
+
+CREATE INDEX idx_recurring_booking_version ON recurring_bookings (version);
 
 -- Insert maintenance windows for rooms Amaze, Beauty, Inspire, and Strive
 INSERT INTO recurring_bookings (user_id, room_id, name, description, start_time, end_time, booking_type)

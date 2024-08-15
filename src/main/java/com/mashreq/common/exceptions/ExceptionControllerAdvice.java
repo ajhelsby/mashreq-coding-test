@@ -38,6 +38,12 @@ public class ExceptionControllerAdvice {
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
   }
 
+  @ExceptionHandler(BookingFailedException.class)
+  public ResponseEntity<String> bookingFailed(BookingFailedException ex) {
+    log.error("BookingFailedException exception: {}", ex.getMessage());
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(MaintenanceInProgressException.class)
   public ResponseEntity<String> maintenanceInProgress(MaintenanceInProgressException ex) {
     log.error("MaintenanceInProgressException exception: {}", ex.getMessage());
