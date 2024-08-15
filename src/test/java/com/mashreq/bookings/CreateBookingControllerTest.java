@@ -1,17 +1,45 @@
 package com.mashreq.bookings;
 
+import com.mashreq.bookings.payload.BookingRequest;
+import com.mashreq.bookings.results.BookingResult;
+import com.mashreq.common.exceptions.BookingFailedException;
+import com.mashreq.users.UserService;
+import com.mashreq.rooms.RoomService;
+import jakarta.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Isolated
 public class CreateBookingControllerTest extends AbstractBookingControllerTest {
+
+  @Mock
+  private BookingRepository bookingRepository;
+
+  @Mock
+  private UserService userService;
+
+  @Mock
+  private RoomService roomService;
+
+  @InjectMocks
+  private BookingService bookingService;
 
   @ParameterizedTest
   @MethodSource("com.mashreq.bookings.TestBookingUtils#personsAndRoom")
@@ -247,5 +275,52 @@ public class CreateBookingControllerTest extends AbstractBookingControllerTest {
     // THEN
     result.andExpect(status().isBadRequest());
     result.andExpect(jsonPath("$.numberOfPeople").value("Number of people must be between 2 and the maximum room capacity"));
+  }
+
+  @Test
+  void testCreateBooking_withRetrySuccess() {
+    // GIVEN
+    var user = givenUser();
+    var authUser = givenAuthUser(user);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var booking = givenBooking(user, "Strive", 19, LocalDateTimeAt8Am, LocalDateTimeAt9Am);
+    var payload = new BookingRequest(LocalDateTimeAt8Am, LocalDateTimeAt9Am, 19, "Name", "Description");
+    var room = roomRepository.findByName("Strive");
+
+    // WHEN
+    when(userService.getUserByUsername(anyString())).thenReturn(user);
+    when(roomService.getAvailableRoomWithOptimumCapacity(any(), any(), anyInt())).thenReturn(room);
+    when(bookingRepository.save(any(Booking.class)))
+        .thenThrow(new OptimisticLockException())
+        .thenThrow(new OptimisticLockException())
+        .thenReturn(booking);
+
+    // Act
+    BookingResult result = bookingService.createBooking(authUser, payload);
+
+    // Assert
+    assertNotNull(result);
+    verify(bookingRepository, times(3)).save(any(Booking.class));
+  }
+
+  @Test
+  void testCreateBooking_withRetryFailure() {
+    // GIVEN
+    var user = givenUser();
+    var authUser = givenAuthUser(user);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+
+    var payload = new BookingRequest(LocalDateTimeAt8Am, LocalDateTimeAt9Am, 19, "Name", "Description");
+    var room = roomRepository.findByName("Strive");
+    // WHEN
+    when(userService.getUserByUsername(anyString())).thenReturn(user);
+    when(roomService.getAvailableRoomWithOptimumCapacity(any(), any(), anyInt())).thenReturn(room);
+    when(bookingRepository.save(any(Booking.class))).thenThrow(new OptimisticLockException());
+
+    // THEN
+    assertThrows(BookingFailedException.class, () -> bookingService.createBooking(authUser, payload));
+    verify(bookingRepository, times(3)).save(any(Booking.class));
   }
 }
