@@ -80,7 +80,7 @@ public class RoomControllerTest extends AbstractControllerTest {
     // THEN
     result.andExpect(status().isOk());
     result.andExpect(jsonPath("$.length()").value(1));
-    result.andExpect(jsonPath("$[0].room.name").value("inspire"));
+    result.andExpect(jsonPath("$[0].room.name").value("Inspire"));
   }
 
   @Test
