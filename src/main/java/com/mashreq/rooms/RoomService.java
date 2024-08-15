@@ -31,16 +31,39 @@ public class RoomService {
   }
 
   /**
-   * Retrieves a list of all rooms.
+   * Retrieves a list of rooms based on the provided time window.
+   * If no time window is provided, all rooms are retrieved.
    *
-   * @return a list of RoomResult objects representing all rooms
+   * @param startTime      the start time of the range to check availability (can be null)
+   * @param endTime        the end time of the range to check availability (can be null)
+   * @param numberOfPeople
+   * @return a list of RoomResult objects representing rooms either within the time range or all rooms
+   * @throws IllegalArgumentException if endTime is provided without startTime or vice versa
    */
-  public List<RoomResult> getRooms() {
-    log.debug("Fetching all rooms from the repository.");
-    List<Room> rooms = roomRepository.findAll();
+  public List<RoomResult> getRooms(
+      LocalDateTime startTime, LocalDateTime endTime,
+      Integer numberOfPeople) {
+
+    // Validate the input parameters
+    List<Room> rooms;
+    boolean hasTimeParams = validateTimeParameters(startTime, endTime);
+    int numOfPeople = numberOfPeople == null ? 0 : numberOfPeople.intValue();
+    if (hasTimeParams) {
+      log.debug("Fetching available rooms for time range from {} to {}.", startTime, endTime);
+      LocalTime startTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(startTime);
+      LocalTime endTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(endTime);
+      rooms = roomRepository.findAvailableRooms(startTime, endTime, startTimeLocal, endTimeLocal, numOfPeople);
+
+    } else {
+      log.debug("Fetching all rooms from the repository.");
+      rooms = roomRepository.findAll();
+    }
+
+    // Convert rooms to RoomResult
     List<RoomResult> roomResults = rooms.stream()
-                                        .map(RoomResult::new)
+                                        .map(room -> new RoomResult(room, null, null))
                                         .collect(Collectors.toList());
+
     log.debug("Retrieved {} rooms.", roomResults.size());
     return roomResults;
   }
@@ -83,5 +106,16 @@ public class RoomService {
     int maxCapacity = roomRepository.findMaxCapacity();
     log.debug("Maximum room capacity is {}.", maxCapacity);
     return maxCapacity;
+  }
+
+  private boolean validateTimeParameters(LocalDateTime startTime, LocalDateTime endTime) {
+    if (startTime != null && endTime == null) {
+      throw new IllegalArgumentException("endTime must be provided if startTime is provided");
+    }
+    if (endTime != null && startTime == null) {
+      throw new IllegalArgumentException("startTime must be provided if endTime is provided");
+    }
+
+    return startTime != null && endTime != null;
   }
 }
