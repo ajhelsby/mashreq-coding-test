@@ -172,6 +172,23 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
   }
 
   @Test
+  void testCreateBooking_endsDifferentDay_shouldFail() throws Exception {
+    // GIVEN
+    var user = givenUser();
+    var authUser = givenAuthUser(user);
+    Instant instantStart = createInstantToday(23, 30);
+    Instant instantEndTomorrow = createInstantOnDay(1, 1, 0);
+    var payload = givenPayload(instantStart, instantEndTomorrow, 2);
+
+    // WHEN
+    var result = whenCallEndpoint_createBooking(authUser, payload);
+
+    // THEN
+    result.andExpect(status().isBadRequest());
+    result.andExpect(jsonPath("$.endTime").value("End time booking time must be today"));
+  }
+
+  @Test
   void testCreateBooking_non15MinStartDate_shouldFail() throws Exception {
     // GIVEN
     var user = givenUser();
@@ -205,13 +222,22 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     result.andExpect(jsonPath("$.endTime").value("The end time must be a multiple of 15 minutes"));
   }
 
-  @Test
-    // Todo fixturize test
-  void testCreateBooking_invalidNoOfPeople_shouldFail() throws Exception {
+  @ParameterizedTest
+  @ValueSource(ints = {Integer.MIN_VALUE, -5, -1, 0, 1, 21, 30, 50, Integer.MAX_VALUE})
+  void testCreateBooking_inValidNoOfPeople_shouldFail(int numberOfPeople) throws Exception {
     // GIVEN
+    var user = givenUser();
+    var authUser = givenAuthUser(user);
+    Instant instantAt8Am = createInstantToday(8, 0);
+    Instant instantAt9Am = createInstantToday(9, 0);
+    var payload = givenPayload(instantAt8Am, instantAt9Am, numberOfPeople);
+
     // WHEN
-    var result = whenCallEndpoint_createBooking(null, null);
+    var result = whenCallEndpoint_createBooking(authUser, payload);
+
     // THEN
+    result.andExpect(status().isBadRequest());
+    result.andExpect(jsonPath("$.numberOfPeople").value("Number of people must be between 2 and the maximum room capacity"));
   }
 
   private ResultActions whenCallEndpoint_createBooking(AuthenticatedUser principal, String payload)

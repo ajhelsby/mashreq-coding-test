@@ -32,4 +32,8 @@ public class RoomService {
 
     return roomOptional.get();
   }
+
+  public int getMaxCapacity() {
+    return roomRepository.findMaxCapacity();
+  }
 }

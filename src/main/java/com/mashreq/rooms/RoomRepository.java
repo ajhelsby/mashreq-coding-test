@@ -31,4 +31,7 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
   );
 
   Room findByName(String roomName);
+
+  @Query("SELECT MAX(r.capacity) FROM Room r")
+  Integer findMaxCapacity();
 }
