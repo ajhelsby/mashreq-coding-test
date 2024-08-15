@@ -84,7 +84,7 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
 
     // THEN
     result.andExpect(status().isNotFound());
-    result.andExpect(content().string("No rooms avaiable between 2024-08-15T04:00:00Z and 2024-08-15T05:00:00Z for 20 people".formatted(startTime, endTime, numberOfPeople)));
+    result.andExpect(content().string("No rooms available between %s and %s for %s people".formatted(startTime, endTime, numberOfPeople)));
   }
 
   @Test
@@ -105,7 +105,7 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
 
     // THEN
     result.andExpect(status().isNotFound());
-    result.andExpect(content().string("No rooms avaiable between 2024-08-15T04:00:00Z and 2024-08-15T05:00:00Z for 20 people".formatted(startTime, endTime, numberOfPeople)));
+    result.andExpect(content().string("No rooms available between %s and %s for %s people".formatted(startTime, endTime, numberOfPeople)));
   }
 
   @Test
