@@ -9,7 +9,7 @@ import com.mashreq.rooms.Room;
 import com.mashreq.users.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * POJO for creating a Booking.
@@ -19,12 +19,12 @@ public record BookingRequest(
     @NotNull
     @IsToday(message = "{error.startTime.today}")
     @IsMultipleOf15Minutes(message = "{error.startTime.15mins}")
-    Instant startTime,
+    LocalDateTime startTime,
 
     @NotNull
     @IsToday(message = "{error.endTime.today}")
     @IsMultipleOf15Minutes(message = "{error.endTime.15mins}")
-    Instant endTime,
+    LocalDateTime endTime,
 
     @ValidNumberOfPeople
     @NotNull

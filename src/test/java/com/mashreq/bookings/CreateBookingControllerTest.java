@@ -5,8 +5,9 @@ import com.mashreq.rooms.Room;
 import com.mashreq.rooms.RoomRepository;
 import com.mashreq.security.AuthenticatedUser;
 import com.mashreq.users.User;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,10 +34,10 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant instantAt8Am = createInstantToday(8, 0);
-    Instant instantAt9Am = createInstantToday(9, 0);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
 
-    var payload = givenPayload(instantAt8Am, instantAt9Am, numberOfPeople);
+    var payload = givenPayload(LocalDateTimeAt8Am, LocalDateTimeAt9Am, numberOfPeople);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
@@ -55,8 +56,8 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant startTime = createInstantToday(8, 0);
-    Instant endTime = createInstantToday(9, 0);
+    LocalDateTime startTime = createLocalDateTimeToday(8, 0);
+    LocalDateTime endTime = createLocalDateTimeToday(9, 0);
     givenBooking(user, bookedRoomName, numberOfPeople, startTime, endTime);
     var payload = givenPayload(startTime, endTime, numberOfPeople);
 
@@ -74,8 +75,8 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     var user = givenUser();
     var authUser = givenAuthUser(user);
     var numberOfPeople = 20;
-    Instant startTime = createInstantToday(8, 0);
-    Instant endTime = createInstantToday(9, 0);
+    LocalDateTime startTime = createLocalDateTimeToday(8, 0);
+    LocalDateTime endTime = createLocalDateTimeToday(9, 0);
     givenBooking(user, "Strive", 15, startTime, endTime);
     var payload = givenPayload(startTime, endTime, numberOfPeople);
 
@@ -87,22 +88,24 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     result.andExpect(content().string("No rooms available between %s and %s for %s people".formatted(startTime, endTime, numberOfPeople)));
   }
 
-  @Test
-  void testCreateBooking_duringMaintenance_shouldFailWithErrorMessage() throws Exception {
+  @ParameterizedTest
+  @MethodSource("com.mashreq.bookings.TestBookingUtils#maintenanceBookingCheck")
+  @CleanBookingTable
+  void testCreateBooking_duringMaintenance_shouldFailWithErrorMessage(
+      int startHour, int startMin, int endHour, int endMin) throws Exception {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    var numberOfPeople = 20;
-    Instant startTime = createInstantToday(8, 0);
-    Instant endTime = createInstantToday(9, 0);
-    givenBooking(user, "Strive", 15, startTime, endTime);
+    var numberOfPeople = 19;
+    LocalDateTime startTime = createLocalDateTimeToday(startHour, startMin);
+    LocalDateTime endTime = createLocalDateTimeToday(endHour, endMin);
     var payload = givenPayload(startTime, endTime, numberOfPeople);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
 
     // THEN
-    result.andExpect(status().isNotFound());
+    result.andExpect(status().isBadRequest());
     result.andExpect(content().string("No rooms available due to maintenance"));
   }
 
@@ -112,10 +115,10 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     var user = givenUser();
     var authUser = givenAuthUser(user);
     var numberOfPeople = 18;
-    Instant existingStartTime = createInstantToday(8, 15);
-    Instant existingEndTime = createInstantToday(9, 0);
-    Instant startTime = createInstantToday(8, 30);
-    Instant endTime = createInstantToday(9, 0);
+    LocalDateTime existingStartTime = createLocalDateTimeToday(8, 15);
+    LocalDateTime existingEndTime = createLocalDateTimeToday(9, 0);
+    LocalDateTime startTime = createLocalDateTimeToday(8, 30);
+    LocalDateTime endTime = createLocalDateTimeToday(9, 0);
     givenBooking(user, "Strive", 15, existingStartTime, existingEndTime);
     var payload = givenPayload(startTime, endTime, numberOfPeople);
 
@@ -143,9 +146,9 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
   @Test
   void testCreateBooking_noAuth_shouldFail() throws Exception {
     // GIVEN
-    Instant instantAt8Am = createInstantToday(8, 0);
-    Instant instantAt9Am = createInstantToday(9, 0);
-    var payload = givenPayload(instantAt8Am, instantAt9Am, 2);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var payload = givenPayload(LocalDateTimeAt8Am, LocalDateTimeAt9Am, 2);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(null, payload);
@@ -159,9 +162,9 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant instantAt8Am = createInstantToday(14, 0);
-    Instant instantAt9Am = createInstantToday(13, 30);
-    var payload = givenPayload(instantAt8Am, instantAt9Am, 2);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(14, 0);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(13, 30);
+    var payload = givenPayload(LocalDateTimeAt8Am, LocalDateTimeAt9Am, 2);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
@@ -177,9 +180,9 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant instantStartTomorrow = createInstantOnDay(daysInFuture, 14, 0);
-    Instant instantEndTomorrow = createInstantOnDay(daysInFuture, 14, 30);
-    var payload = givenPayload(instantStartTomorrow, instantEndTomorrow, 2);
+    LocalDateTime LocalDateTimeStartTomorrow = createLocalDateTimeOnDay(daysInFuture, 14, 0);
+    LocalDateTime LocalDateTimeEndTomorrow = createLocalDateTimeOnDay(daysInFuture, 14, 30);
+    var payload = givenPayload(LocalDateTimeStartTomorrow, LocalDateTimeEndTomorrow, 2);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
@@ -195,9 +198,9 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant instantStart = createInstantToday(23, 30);
-    Instant instantEndTomorrow = createInstantOnDay(1, 1, 0);
-    var payload = givenPayload(instantStart, instantEndTomorrow, 2);
+    LocalDateTime LocalDateTimeStart = createLocalDateTimeToday(23, 30);
+    LocalDateTime LocalDateTimeEndTomorrow = createLocalDateTimeOnDay(1, 1, 0);
+    var payload = givenPayload(LocalDateTimeStart, LocalDateTimeEndTomorrow, 2);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
@@ -212,9 +215,9 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant instantAt8Am = createInstantToday(8, 3);
-    Instant instantAt9Am = createInstantToday(9, 0);
-    var payload = givenPayload(instantAt8Am, instantAt9Am, 2);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 3);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var payload = givenPayload(LocalDateTimeAt8Am, LocalDateTimeAt9Am, 2);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
@@ -229,9 +232,9 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant instantAt8Am = createInstantToday(8, 0);
-    Instant instantAt9Am = createInstantToday(9, 17);
-    var payload = givenPayload(instantAt8Am, instantAt9Am, 2);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 17);
+    var payload = givenPayload(LocalDateTimeAt8Am, LocalDateTimeAt9Am, 2);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
@@ -247,9 +250,9 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    Instant instantAt8Am = createInstantToday(8, 0);
-    Instant instantAt9Am = createInstantToday(9, 0);
-    var payload = givenPayload(instantAt8Am, instantAt9Am, numberOfPeople);
+    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var payload = givenPayload(LocalDateTimeAt8Am, LocalDateTimeAt9Am, numberOfPeople);
 
     // WHEN
     var result = whenCallEndpoint_createBooking(authUser, payload);
@@ -264,7 +267,7 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     return callPost(principal, BOOKINGS_URL, payload);
   }
 
-  private String givenPayload(Instant startTime, Instant endTime, int numberOfPeople) {
+  private String givenPayload(LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
     return """
         {
           "name": "Meeting Name",
@@ -277,7 +280,7 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
   }
 
   private Booking givenBooking(
-      User user, String roomName, int noOfPeople, Instant startTime, Instant endTime) {
+      User user, String roomName, int noOfPeople, LocalDateTime startTime, LocalDateTime endTime) {
     Room room = roomRepository.findByName(roomName);
     Booking booking = Booking.builder()
                              .startTime(startTime)
@@ -291,19 +294,19 @@ public class CreateBookingControllerTest extends AbstractControllerTest {
     return bookingRepository.save(booking);
   }
 
-  private Instant createInstantToday(int hour, int min) {
+  private LocalDateTime createLocalDateTimeToday(int hour, int min) {
     return LocalDate.now()
                     .atTime(hour, min)
                     .atZone(ZoneId.systemDefault())
-                    .toInstant();
+                    .toLocalDateTime();
   }
 
-  private Instant createInstantOnDay(int addDays, int hour, int min) {
+  private LocalDateTime createLocalDateTimeOnDay(int addDays, int hour, int min) {
     return LocalDate.now()
                     .plusDays(addDays)
                     .atTime(hour, min)
                     .atZone(ZoneId.systemDefault())
-                    .toInstant();
+                    .toLocalDateTime();
 
   }
 }
