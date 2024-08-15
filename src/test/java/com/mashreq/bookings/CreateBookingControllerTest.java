@@ -38,7 +38,7 @@ public class CreateBookingControllerTest extends AbstractBookingControllerTest {
     var result = whenCallEndpoint_createBooking(authUser, payload);
 
     // THEN
-    result.andExpect(status().isOk());
+    result.andExpect(status().isCreated());
     result.andExpect(jsonPath("$.room.name").value(roomName));
   }
 
@@ -60,7 +60,7 @@ public class CreateBookingControllerTest extends AbstractBookingControllerTest {
     var result = whenCallEndpoint_createBooking(authUser, payload);
 
     // THEN
-    result.andExpect(status().isOk());
+    result.andExpect(status().isCreated());
     result.andExpect(jsonPath("$.room.name").value(bestRoomName));
   }
 
@@ -256,18 +256,4 @@ public class CreateBookingControllerTest extends AbstractBookingControllerTest {
     result.andExpect(status().isBadRequest());
     result.andExpect(jsonPath("$.numberOfPeople").value("Number of people must be between 2 and the maximum room capacity"));
   }
-
-  private String givenPayload(LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
-    return """
-        {
-          "name": "Meeting Name",
-          "description": "Meeting Description",
-          "startTime":"%s",
-          "endTime":"%s",
-          "numberOfPeople": %s
-        }
-        """.formatted(startTime.toString(), endTime.toString(), String.valueOf(numberOfPeople));
-  }
-
-
 }

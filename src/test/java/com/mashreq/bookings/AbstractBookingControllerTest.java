@@ -60,4 +60,16 @@ public class AbstractBookingControllerTest  extends AbstractControllerTest {
     booking.setDescription("Meeting Description");
     return bookingRepository.save(booking);
   }
+
+  protected String givenPayload(LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
+    return """
+        {
+          "name": "Meeting Name",
+          "description": "Meeting Description",
+          "startTime":"%s",
+          "endTime":"%s",
+          "numberOfPeople": %s
+        }
+        """.formatted(startTime.toString(), endTime.toString(), String.valueOf(numberOfPeople));
+  }
 }

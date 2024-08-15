@@ -1,6 +1,5 @@
 package com.mashreq.bookings;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +17,7 @@ public interface RecurringBookingRepository extends JpaRepository<RecurringBooki
     AND r.capacity >= :numberOfPeople
     AND rb.start_time < :endTime
     AND rb.end_time > :startTime
+    AND rb.status != 'CANCELLED'
 """, nativeQuery = true)
   List<RecurringBooking> findRecurringMaintenanceBooking(
       @Param("startTime") LocalTime startTime,

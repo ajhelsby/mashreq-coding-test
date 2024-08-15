@@ -112,9 +112,9 @@ public class BookingService {
    * Cancels a booking if the authenticated user is authorized to do so.
    *
    * @param authenticatedUser the user requesting the cancellation
-   * @param bookingId the ID of the booking to be cancelled
+   * @param bookingId         the ID of the booking to be cancelled
    * @throws ResourceNotFoundException if the booking does not exist
-   * @throws AuthenticationException if the authenticated user is not authorized to cancel the booking
+   * @throws AuthenticationException   if the authenticated user is not authorized to cancel the booking
    */
   @Transactional
   public void cancelBooking(AuthenticatedUser authenticatedUser, UUID bookingId) {
@@ -124,7 +124,7 @@ public class BookingService {
     // Check if the booking exists
     Booking booking = bookingOptional.orElseThrow(() -> {
       log.error("Booking with ID {} not found.", bookingId);
-      return new ResourceNotFoundException(I18n.getMessage("{error.booking.notFound}"));
+      return new ResourceNotFoundException(I18n.getMessage("error.booking.notFound", bookingId));
     });
 
     // Retrieve the user making the request
@@ -133,7 +133,7 @@ public class BookingService {
     // Check if the authenticated user is the owner of the booking
     if (!booking.getUser().equals(user)) {
       log.warn("User {} is not authorized to cancel booking with ID {}.", user.getEmail(), bookingId);
-      throw new AuthenticationException(I18n.getMessage("{error.booking.unauthorized}"));
+      throw new AuthenticationException(I18n.getMessage("error.booking.unauthorized", bookingId));
     }
 
     // Update the status of the booking

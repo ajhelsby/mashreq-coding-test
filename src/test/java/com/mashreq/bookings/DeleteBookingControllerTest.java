@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DeleteBookingControllerTest extends AbstractBookingControllerTest {
@@ -13,9 +14,9 @@ public class DeleteBookingControllerTest extends AbstractBookingControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
-    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
-    var booking = givenBooking(user, "Amaze", 2, LocalDateTimeAt8Am, LocalDateTimeAt9Am);
+    LocalDateTime localDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime localDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var booking = givenBooking(user, "Amaze", 2, localDateTimeAt8Am, localDateTimeAt9Am);
 
     // WHEN
     var result = whenCallEndpoint_deleteBooking(authUser, booking.getId());
@@ -31,10 +32,10 @@ public class DeleteBookingControllerTest extends AbstractBookingControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
-    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    LocalDateTime localDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime localDateTimeAt9Am = createLocalDateTimeToday(9, 0);
     var anotherUser = givenUser();
-    var booking = givenBooking(anotherUser, "Amaze", 2, LocalDateTimeAt8Am, LocalDateTimeAt9Am);
+    var booking = givenBooking(anotherUser, "Amaze", 2, localDateTimeAt8Am, localDateTimeAt9Am);
 
     // WHEN
     var result = whenCallEndpoint_deleteBooking(authUser, booking.getId());
@@ -50,9 +51,9 @@ public class DeleteBookingControllerTest extends AbstractBookingControllerTest {
     // GIVEN
     var user = givenUser();
     var authUser = givenAuthUser(user);
-    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
-    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
-    var booking = givenBooking(user, "Amaze", 2, LocalDateTimeAt8Am, LocalDateTimeAt9Am);
+    LocalDateTime localDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime localDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var booking = givenBooking(user, "Amaze", 2, localDateTimeAt8Am, localDateTimeAt9Am);
     // WHEN
     var result = whenCallEndpoint_deleteBooking(authUser, UUID.randomUUID());
 
@@ -66,14 +67,41 @@ public class DeleteBookingControllerTest extends AbstractBookingControllerTest {
   void testDeleteBooking_noAuth_shouldFail() throws Exception {
     // GIVEN
     var user = givenUser();
-    LocalDateTime LocalDateTimeAt8Am = createLocalDateTimeToday(8, 0);
-    LocalDateTime LocalDateTimeAt9Am = createLocalDateTimeToday(9, 0);
-    var booking = givenBooking(user, "Amaze", 2, LocalDateTimeAt8Am, LocalDateTimeAt9Am);
+    LocalDateTime localDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime localDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var booking = givenBooking(user, "Amaze", 2, localDateTimeAt8Am, localDateTimeAt9Am);
     // WHEN
     var result = whenCallEndpoint_deleteBooking(null, booking.getId());
 
     // THEN
     result.andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void testDeleteBooking_AndCreateBooking_shouldSucceed() throws Exception {
+    // GIVEN
+    var user = givenUser();
+    var authUser = givenAuthUser(user);
+    LocalDateTime localDateTimeAt8Am = createLocalDateTimeToday(8, 0);
+    LocalDateTime localDateTimeAt9Am = createLocalDateTimeToday(9, 0);
+    var roomName = "Strive";
+    var booking = givenBooking(user, roomName, 20, localDateTimeAt8Am, localDateTimeAt9Am);
+    var payload = givenPayload(localDateTimeAt8Am, localDateTimeAt9Am, 20);
+
+    // WHEN
+    var result = whenCallEndpoint_deleteBooking(authUser, booking.getId());
+
+    // THEN
+    result.andExpect(status().isNoContent());
+    var updatedBooking = bookingRepository.findById(booking.getId()).get();
+    Assertions.assertEquals(BookingStatus.CANCELLED, updatedBooking.getStatus());
+
+    // WHEN
+    var createResult = whenCallEndpoint_createBooking(authUser, payload);
+
+    // THEN
+    createResult.andExpect(status().isCreated());
+    createResult.andExpect(jsonPath("$.room.name").value(roomName));
   }
 
 }
