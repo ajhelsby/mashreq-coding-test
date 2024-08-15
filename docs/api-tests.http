@@ -1,0 +1,43 @@
+### Sign Up
+POST http://127.0.0.1:8080/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test@email.com",
+  "password": "8U%qz!v^io^P3uqN4#Ba",
+  "confirmPassword": "8U%qz!v^io^P3uqN4#Ba",
+  "firstName": "First",
+  "lastName": "Last"
+}
+
+###
+
+### Login
+POST http://127.0.0.1:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@email.com",
+  "password": "8U%qz!v^io^P3uqN4#Ba"
+}
+
+### List Rooms
+GET http://127.0.0.1:8080/api/v1/rooms?startTime=2024-08-16T8:00:00&endTime=2024-08-16T8:15:00&numberOfPeople=2
+Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3NTQ1MDQsIm1hc2hyZXEtaWF0IjoxNzIzNzUyNzA0NTY1fQ.uqM8mmMUU91k4gb_dMCrlabHmr9xZZKCl0gK13Y4UXI"
+
+
+### Create Booking
+POST http://127.0.0.1:8080/api/v1/bookings
+Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3NTQxMDksIm1hc2hyZXEtaWF0IjoxNzIzNzUyMzA5Njk5fQ.Xpz9cuOYWPSJv_ghaZS2FKQq3u9QInYAka7c0I-zAXE"
+
+{
+    "startTime": "2024-08-15T14:00:00",
+    "endTime": "2024-08-15T14:15:00",
+    "name": "Important meeting",
+    "description": "Meeting information",
+    "numberOfPeople": 2
+}
+
+### Cancel Booking
+DELETE http://127.0.0.1:8080/api/v1/bookings/bookingId
+Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3NTQxMDksIm1hc2hyZXEtaWF0IjoxNzIzNzUyMzA5Njk5fQ.Xpz9cuOYWPSJv_ghaZS2FKQq3u9QInYAka7c0I-zAXE"

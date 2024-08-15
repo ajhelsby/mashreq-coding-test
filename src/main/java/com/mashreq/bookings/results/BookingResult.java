@@ -5,8 +5,10 @@ import com.mashreq.bookings.Booking;
 import com.mashreq.rooms.Room;
 import com.mashreq.users.User;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record BookingResult(
+    UUID id,
     String name,
     String description,
     LocalDateTime startTime,
@@ -25,6 +27,6 @@ public record BookingResult(
     int numberOfPeople = booking.getNumberOfPeople();
 
     // Create and return a new BookingResult instance
-    return new BookingResult(booking.getName(), booking.getDescription(), startTime, endTime, user, room, numberOfPeople, BookingType.MEETING);
+    return new BookingResult(booking.getId(), booking.getName(), booking.getDescription(), startTime, endTime, user, room, numberOfPeople, BookingType.MEETING);
   }
 }
