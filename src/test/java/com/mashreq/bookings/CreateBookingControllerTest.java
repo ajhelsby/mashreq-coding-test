@@ -1,24 +1,16 @@
 package com.mashreq.bookings;
 
-import com.mashreq.AbstractControllerTest;
-import com.mashreq.rooms.Room;
-import com.mashreq.rooms.RoomRepository;
-import com.mashreq.security.AuthenticatedUser;
-import com.mashreq.users.User;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Isolated
 public class CreateBookingControllerTest extends AbstractBookingControllerTest {
 
   @ParameterizedTest
