@@ -3,6 +3,7 @@ package com.mashreq.rooms;
 import com.mashreq.AbstractControllerTest;
 import com.mashreq.bookings.Booking;
 import com.mashreq.bookings.BookingRepository;
+import com.mashreq.bookings.CleanBookingTable;
 import com.mashreq.bookings.validators.IsMultipleOf15Minutes;
 import com.mashreq.security.AuthenticatedUser;
 import com.mashreq.users.User;
@@ -41,6 +42,7 @@ public class RoomControllerTest extends AbstractControllerTest {
   }
 
   @Test
+  @CleanBookingTable
   void testGetRooms_withDateFilter_shouldReturn200() throws Exception {
     // GIVEN
     var user = givenUser();
@@ -57,10 +59,11 @@ public class RoomControllerTest extends AbstractControllerTest {
     // THEN
     result.andExpect(status().isOk());
     result.andExpect(jsonPath("$.length()").value(1));
-    result.andExpect(jsonPath("$[0].name").value("Strive"));
+    result.andExpect(jsonPath("$[0].room.name").value("Strive"));
   }
 
   @Test
+  @CleanBookingTable
   void testGetRooms_withDateFilterAndPeople_shouldReturn200() throws Exception {
     // GIVEN
     var user = givenUser();
@@ -77,7 +80,7 @@ public class RoomControllerTest extends AbstractControllerTest {
     // THEN
     result.andExpect(status().isOk());
     result.andExpect(jsonPath("$.length()").value(1));
-    result.andExpect(jsonPath("$[0].name").value("inspire"));
+    result.andExpect(jsonPath("$[0].room.name").value("inspire"));
   }
 
   @Test
@@ -87,7 +90,7 @@ public class RoomControllerTest extends AbstractControllerTest {
     // WHEN
     var result = whenCallEndpoint_roomsWithFilters(givenAuthUser(), null, endTime, null);
     // THEN
-    result.andExpect(status().isOk());
+    result.andExpect(status().isBadRequest());
   }
 
   @Test
@@ -97,7 +100,7 @@ public class RoomControllerTest extends AbstractControllerTest {
     // WHEN
     var result = whenCallEndpoint_roomsWithFilters(givenAuthUser(), startTime, null, null);
     // THEN
-    result.andExpect(status().isOk());
+    result.andExpect(status().isBadRequest());
   }
 
   @Test

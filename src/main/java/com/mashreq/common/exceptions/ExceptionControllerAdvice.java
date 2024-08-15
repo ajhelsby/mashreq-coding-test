@@ -26,6 +26,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<String> illegalArgumentException(IllegalArgumentException ex) {
+    log.error("IllegalArgumentException exception: {}", ex.getMessage());
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<String> resourceNotFound(ResourceNotFoundException ex) {
     log.error("ResourceNotFoundException exception: {}", ex.getMessage());
