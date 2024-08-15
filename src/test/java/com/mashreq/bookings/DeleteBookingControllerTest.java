@@ -28,6 +28,7 @@ public class DeleteBookingControllerTest extends AbstractBookingControllerTest {
   }
 
   @Test
+  @CleanBookingTable
   void testDeleteBooking_userNotOwner_shouldFail() throws Exception {
     // GIVEN
     var user = givenUser();
@@ -41,7 +42,7 @@ public class DeleteBookingControllerTest extends AbstractBookingControllerTest {
     var result = whenCallEndpoint_deleteBooking(authUser, booking.getId());
 
     // THEN
-    result.andExpect(status().isNoContent());
+    result.andExpect(status().isUnauthorized());
     var updatedBooking = bookingRepository.findById(booking.getId()).get();
     Assertions.assertEquals(BookingStatus.BOOKED, updatedBooking.getStatus());
   }
