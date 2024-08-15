@@ -2,9 +2,12 @@ package com.mashreq.bookings;
 
 import com.mashreq.bookings.payload.BookingRequest;
 import com.mashreq.bookings.results.BookingResult;
+import com.mashreq.common.I18n;
 import com.mashreq.common.TimeUtils;
+import com.mashreq.common.exceptions.AuthenticationException;
 import com.mashreq.common.exceptions.MaintenanceInProgressException;
 import com.mashreq.common.exceptions.NoRoomsAvailableException;
+import com.mashreq.common.exceptions.ResourceNotFoundException;
 import com.mashreq.rooms.Room;
 import com.mashreq.rooms.RoomService;
 import com.mashreq.security.AuthenticatedUser;
@@ -14,6 +17,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,5 +106,41 @@ public class BookingService {
       // If recurring maintenance found, throw an exception
       throw new MaintenanceInProgressException();
     }
+  }
+
+  /**
+   * Cancels a booking if the authenticated user is authorized to do so.
+   *
+   * @param authenticatedUser the user requesting the cancellation
+   * @param bookingId the ID of the booking to be cancelled
+   * @throws ResourceNotFoundException if the booking does not exist
+   * @throws AuthenticationException if the authenticated user is not authorized to cancel the booking
+   */
+  @Transactional
+  public void cancelBooking(AuthenticatedUser authenticatedUser, UUID bookingId) {
+    // Fetch the booking from the repository
+    Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+
+    // Check if the booking exists
+    Booking booking = bookingOptional.orElseThrow(() -> {
+      log.error("Booking with ID {} not found.", bookingId);
+      return new ResourceNotFoundException(I18n.getMessage("{error.booking.notFound}"));
+    });
+
+    // Retrieve the user making the request
+    User user = userService.getUserByUsername(authenticatedUser.getUsername());
+
+    // Check if the authenticated user is the owner of the booking
+    if (!booking.getUser().equals(user)) {
+      log.warn("User {} is not authorized to cancel booking with ID {}.", user.getEmail(), bookingId);
+      throw new AuthenticationException(I18n.getMessage("{error.booking.unauthorized}"));
+    }
+
+    // Update the status of the booking
+    booking.setStatus(BookingStatus.CANCELLED);
+    bookingRepository.save(booking);
+
+    // Log the successful cancellation
+    log.info("Booking with ID {} successfully cancelled by user {}.", bookingId, user.getEmail());
   }
 }
