@@ -1,6 +1,7 @@
 package com.mashreq.configs;
 
 import com.mashreq.authentication.jpa.JpaSecurityConfig;
+import com.mashreq.security.OpenApiSecurityConfig;
 import com.mashreq.security.SimpleAccessDeniedHandler;
 import com.mashreq.security.SimpleAuthenticationEntryPoint;
 import com.mashreq.security.jwt.JwsService;
@@ -48,12 +49,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 })
 @Slf4j
 public class SecurityConfiguration {
-
-  @Value("${openapi.user}")
-  private String openapiUser;
-
-  @Value("${openapi.password}")
-  private String openapiPassword;
 
   /**
    * Default security configuration for the APIs.
@@ -104,45 +99,8 @@ public class SecurityConfiguration {
    */
   @Bean
   @Order(1)
-  public SecurityFilterChain openApiSecurity(HttpSecurity http, PasswordEncoder passwordEncoder)
-      throws Exception {
-    // Define the endpoints that should be matched for OpenAPI
-    String[] openApiEndpoints = new String[]{"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**"};
-
-    // Configure the HttpSecurity for OpenAPI endpoints
-    http
-        .securityMatcher(request -> {
-          for (String endpoint : openApiEndpoints) {
-            if (request.getServletPath().startsWith(endpoint)) {
-              return true;
-            }
-          }
-          return false;
-        })
-        .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(openApiEndpoints).hasRole("OPENAPI")
-            .anyRequest().authenticated()
-        )
-        .csrf(AbstractHttpConfigurer::disable)
-        .addFilterBefore(new BasicAuthenticationFilter(openApiAuthenticationManager(http, passwordEncoder)), BasicAuthenticationFilter.class); // Configures basic authentication
-
-
-    return http.getOrBuild();
-  }
-
-  /**
-   * Configures the authentication manager with an in-memory user for OpenAPI.
-   */
-  @Bean
-  public AuthenticationManager openApiAuthenticationManager(
-      HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
-    AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-    authenticationManagerBuilder
-        .inMemoryAuthentication()
-        .withUser(openapiUser)
-        .password(passwordEncoder.encode(openapiPassword))
-        .roles("OPENAPI");
-    return authenticationManagerBuilder.build();
+  public OpenApiSecurityConfig openApiSecurityConfig(PasswordEncoder passwordEncoder) {
+    return new OpenApiSecurityConfig(passwordEncoder);
   }
 }
 

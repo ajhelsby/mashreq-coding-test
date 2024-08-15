@@ -9,7 +9,7 @@ CREATE TABLE "users"
     first_name             VARCHAR(45)  NOT NULL,
     last_name              VARCHAR(45)  NOT NULL,
     last_logged_in_on      TIMESTAMP WITH TIME ZONE DEFAULT NULL,
-    created_on             TIMESTAMP WITH TIME ZONE DEFAULT NULL,
-    modified_on            TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+    created_on             TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    modified_on            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );

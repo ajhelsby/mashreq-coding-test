@@ -45,6 +45,7 @@ public abstract class AbstractControllerTest {
   protected static final String SIGNUP_URL = "/api/v1/auth/signup";
   protected static final String LOGIN_URL = "/api/v1/auth/login";
   protected static final String ROOMS_URL = "/api/v1/rooms";
+  protected static final String BOOKINGS_URL = "/api/v1/bookings";
   protected static final String USERS_INIT_URL = "/api/v1/users/init";
   public static final String ACCOUNT_PASSWORD = "Un1tT3st";
   protected String userEmail;
@@ -68,7 +69,8 @@ public abstract class AbstractControllerTest {
 
     // need to truncate all at the same time due to foreign key constraint
     // or user DELETE statements per entity
-    em.createNativeQuery("TRUNCATE TABLE users").executeUpdate();
+    em.createNativeQuery("DELETE FROM bookings").executeUpdate();
+    em.createNativeQuery("DELETE FROM users").executeUpdate();
 
     transaction.commit();
     em.close();
@@ -123,6 +125,10 @@ public abstract class AbstractControllerTest {
 
   public AuthenticatedUser givenAuthUser() {
     return givenAuthUser(UUID.randomUUID(), generateEmail());
+  }
+
+  public AuthenticatedUser givenAuthUser(User user) {
+    return new AuthenticatedUser(user);
   }
 
   public AuthenticatedUser givenAuthUser(

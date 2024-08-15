@@ -1,6 +1,7 @@
 package com.mashreq.users;
 
 import com.mashreq.common.I18n;
+import com.mashreq.common.exceptions.ResourceNotFoundException;
 import com.mashreq.users.payloads.UserListAddPayload;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,13 @@ public class UserService {
   public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
+  }
+
+  public User getUserByUsername(String username) {
+    return userRepository
+        .findOneByEmail(username)
+        .orElseThrow(
+            () -> new ResourceNotFoundException(I18n.getMessage("error.user.notFound")));
   }
 
   @Transactional

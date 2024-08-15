@@ -58,8 +58,9 @@ public class AuthController extends BaseApiV1Controller {
    */
   @PostMapping(value = "auth/login", consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Allow a user to login to the system")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "User successfully authenticated"),
+      @ApiResponse(responseCode = "200", description = "Successfully created booking"),
       @ApiResponse(responseCode = "500", description = "Internal error"),
       @ApiResponse(responseCode = "422", description = "When failed form validation"),
       @ApiResponse(responseCode = "401", description = "When bad credentials provided.")

@@ -129,14 +129,14 @@ class UserInitControllerTest extends AbstractControllerTest {
                [
                     {
                         "email": "%s",
-                        "first_name": "User",
-                        "last_name": "One",
+                        "firstName": "User",
+                        "lastName": "One",
                         "password": "Super_secret1"
                     },
                     {
                        "email": "%s",
-                       "first_name": "User",
-                       "last_name": "Two",
+                       "firstName": "User",
+                       "lastName": "Two",
                        "password": "Super_secret1"
                   }
                ]
