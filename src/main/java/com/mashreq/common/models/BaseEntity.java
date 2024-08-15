@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +28,9 @@ public abstract class BaseEntity implements Serializable {
 
   @CreatedDate
   @Column(name = "created_on")
-  private Instant createdOn;
+  private LocalDateTime createdOn;
 
   @LastModifiedDate
   @Column(name = "modified_on")
-  private Instant modifiedOn;
+  private LocalDateTime modifiedOn;
 }

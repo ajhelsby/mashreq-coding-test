@@ -33,9 +33,15 @@ public class ExceptionControllerAdvice {
   }
 
   @ExceptionHandler(NoRoomsAvailableException.class)
-  public ResponseEntity<String> resourceNotFound(NoRoomsAvailableException ex) {
+  public ResponseEntity<String> noRoomsAvailable(NoRoomsAvailableException ex) {
     log.error("NoRoomsAvailableException exception: {}", ex.getMessage());
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(MaintenanceInProgressException.class)
+  public ResponseEntity<String> maintenanceInProgress(MaintenanceInProgressException ex) {
+    log.error("MaintenanceInProgressException exception: {}", ex.getMessage());
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(EmailTakenException.class)

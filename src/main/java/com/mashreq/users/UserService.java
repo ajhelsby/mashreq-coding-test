@@ -3,7 +3,7 @@ package com.mashreq.users;
 import com.mashreq.common.I18n;
 import com.mashreq.common.exceptions.ResourceNotFoundException;
 import com.mashreq.users.payloads.UserListAddPayload;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,8 +48,8 @@ public class UserService {
 
           var newUser = u.toEntity();
           newUser.setPassword(passwordEncoder.encode(u.password()));
-          newUser.setCreatedOn(Instant.now());
-          newUser.setModifiedOn(Instant.now());
+          newUser.setCreatedOn(LocalDateTime.now());
+          newUser.setModifiedOn(LocalDateTime.now());
 
           userRepository.save(newUser);
         });

@@ -9,7 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -28,23 +28,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "bookings")
-public class Booking extends BaseEntity {
-
-  @ManyToOne
-  private User user;
-
-  @ManyToOne
-  private Room room;
+public class Booking extends AbstractBooking {
 
   @Column(name = "number_of_people", nullable = false)
   private int numberOfPeople;
 
   @Column(name = "start_time", nullable = false)
-  private Instant startTime;
+  private LocalDateTime startTime;
 
   @Column(name = "end_time", nullable = false)
-  private Instant endTime;
-
-  @Enumerated(EnumType.STRING)
-  private BookingStatus status = BookingStatus.BOOKED;
+  private LocalDateTime endTime;
 }

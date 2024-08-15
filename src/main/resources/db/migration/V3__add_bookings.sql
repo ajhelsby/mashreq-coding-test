@@ -3,6 +3,8 @@ CREATE TABLE bookings
     id               uuid                     DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id          uuid                     NOT NULL,
     room_id          uuid                     NOT NULL,
+    name             VARCHAR(100),
+    description      VARCHAR(255),
     number_of_people INTEGER                  NOT NULL,
     start_time       TIMESTAMP WITH TIME ZONE NOT NULL,
     end_time         TIMESTAMP WITH TIME ZONE NOT NULL,

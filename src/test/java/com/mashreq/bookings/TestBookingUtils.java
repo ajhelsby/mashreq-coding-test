@@ -43,4 +43,18 @@ public class TestBookingUtils {
         Arguments.of(12, "Inspire", "Strive")
     );
   }
+
+  private static Stream<Arguments> maintenanceBookingCheck() {
+    return Stream.of(
+        Arguments.of(8, 45, 9, 30),
+        Arguments.of(9, 0, 9, 30),
+        Arguments.of(9, 0, 9, 15),
+        Arguments.of(12, 45, 13, 30),
+        Arguments.of(13, 0, 13, 30),
+        Arguments.of(13, 0, 13, 15),
+        Arguments.of(16, 45, 17, 30),
+        Arguments.of(17, 0, 17, 30),
+        Arguments.of(17, 0, 17, 15)
+    );
+  }
 }

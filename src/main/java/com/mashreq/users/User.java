@@ -6,7 +6,7 @@ import com.mashreq.common.models.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -42,5 +42,5 @@ public class User extends BaseEntity {
   private String lastName;
 
   @Column(name = "last_logged_in_on")
-  private Instant lastLoggedInOn;
+  private LocalDateTime lastLoggedInOn;
 }

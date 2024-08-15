@@ -13,7 +13,7 @@ import com.mashreq.security.jwt.JwsService;
 import com.mashreq.security.jwt.TokenService;
 import com.mashreq.users.User;
 import com.mashreq.users.UserRepository;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -75,8 +75,8 @@ public class JpaAuthenticationService extends AbstractAuthenticationService {
 
     User userToRegister = payload.toEntity();
     userToRegister.setPassword(passwordEncoder.encode(payload.password()));
-    userToRegister.setCreatedOn(Instant.now());
-    userToRegister.setModifiedOn(Instant.now());
+    userToRegister.setCreatedOn(LocalDateTime.now());
+    userToRegister.setModifiedOn(LocalDateTime.now());
 
     userRepository.save(userToRegister);
   }
@@ -104,7 +104,7 @@ public class JpaAuthenticationService extends AbstractAuthenticationService {
     log.debug("Successfully logged in user");
 
     // update last login date
-    user.setLastLoggedInOn(Instant.now());
+    user.setLastLoggedInOn(LocalDateTime.now());
     userRepository.save(user);
 
     return new LoginResult(user, token);
