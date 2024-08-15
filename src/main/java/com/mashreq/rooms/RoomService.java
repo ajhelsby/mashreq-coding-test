@@ -42,15 +42,18 @@ public class RoomService {
    */
   public List<RoomResult> getRooms(
       LocalDateTime startTime, LocalDateTime endTime,
-      int numberOfPeople) {
+      Integer numberOfPeople) {
+
     // Validate the input parameters
     List<Room> rooms;
     boolean hasTimeParams = validateTimeParameters(startTime, endTime);
+    int numOfPeople = numberOfPeople == null ? 0 : numberOfPeople.intValue();
     if (hasTimeParams) {
       log.debug("Fetching available rooms for time range from {} to {}.", startTime, endTime);
       LocalTime startTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(startTime);
       LocalTime endTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(endTime);
-      rooms = roomRepository.findAvailableRooms(startTime, endTime, startTimeLocal, endTimeLocal, numberOfPeople);
+      rooms = roomRepository.findAvailableRooms(startTime, endTime, startTimeLocal, endTimeLocal, numOfPeople);
+
     } else {
       log.debug("Fetching all rooms from the repository.");
       rooms = roomRepository.findAll();

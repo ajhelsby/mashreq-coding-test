@@ -35,7 +35,7 @@ public class RoomController extends BaseApiV1Controller {
   public ResponseEntity<List<RoomResult>> list(
       @IsMultipleOf15Minutes @RequestParam(value = "startTime", required = false) LocalDateTime startTime,
       @IsMultipleOf15Minutes @RequestParam(value = "endTime", required = false) LocalDateTime endTime,
-      @RequestParam(value = "numberOfPeople", required = false) int numberOfPeople) {
+      @RequestParam(value = "numberOfPeople", required = false) Integer numberOfPeople) {
     return ResponseEntity.ok(roomService.getRooms(startTime, endTime, numberOfPeople));
   }
 }
