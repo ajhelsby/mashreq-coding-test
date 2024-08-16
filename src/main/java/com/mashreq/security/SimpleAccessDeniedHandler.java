@@ -24,7 +24,6 @@ public class SimpleAccessDeniedHandler implements AccessDeniedHandler {
       AccessDeniedException accessDeniedException)
       throws IOException {
 
-    // Here you can place any message you want
     log.info("Handling SimpleAccessDeniedHandler error {}", accessDeniedException.getMessage());
     response.sendError(HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage());
   }

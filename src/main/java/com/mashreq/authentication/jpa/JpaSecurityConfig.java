@@ -9,8 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +31,8 @@ import org.springframework.web.cors.CorsUtils;
  * <p>This security implementation uses users from the database.
  */
 @Slf4j
+@Configuration
+@EnableWebSecurity
 public class JpaSecurityConfig extends BaseSecurityConfig {
 
   private final UserDetailsService userDetailsService;
@@ -48,16 +52,7 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
     log.info("JpaSecurityConfig created");
   }
 
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    // configure security authentication to use our implementation
-    auth
-        .userDetailsService(userDetailsService)
-        .passwordEncoder(passwordEncoder);
-  }
-
   @Bean
-  @Override
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
@@ -65,17 +60,12 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(this::configureExceptionHandling)
         .authorizeHttpRequests(this::configureAuthorization)
-        .formLogin(formLogin -> formLogin
-            .loginPage(SecurityUtils.LOGIN_PATH)
-            .successHandler(authenticationSuccessHandler())
-            .failureHandler(authenticationFailureHandler()))
         .addFilterBefore(new JwtAuthenticationFilter(userDetailsService, jwsService),
             UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
 
-  @Bean
   protected void configureExceptionHandling(HttpSecurity http) throws Exception {
     http.exceptionHandling(exceptionHandling ->
         exceptionHandling
@@ -84,7 +74,6 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
     );
   }
 
-  @Bean
   protected void configureAuthorization(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(authz -> authz
         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
@@ -92,7 +81,6 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
         .anyRequest().authenticated());
   }
 
-  @Bean
   public AuthenticationSuccessHandler authenticationSuccessHandler() {
     return (request, response, authentication) -> {
       response.setStatus(HttpServletResponse.SC_OK);
@@ -100,7 +88,6 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
     };
   }
 
-  @Bean
   public AuthenticationFailureHandler authenticationFailureHandler() {
     return (request, response, exception) -> {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -108,14 +95,12 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
     };
   }
 
-  @Bean
   public AuthenticationEntryPoint authenticationErrorHandler() {
     return (request, response, authException) -> {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: " + authException.getMessage());
     };
   }
 
-  @Bean
   public AccessDeniedHandler accessDeniedHandler() {
     return (request, response, accessDeniedException) -> {
       response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden: " + accessDeniedException.getMessage());

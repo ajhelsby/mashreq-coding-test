@@ -1,16 +1,26 @@
 package com.mashreq.rooms;
 
+import com.mashreq.bookings.Booking;
+import com.mashreq.bookings.BookingRepository;
+import com.mashreq.bookings.RecurringBooking;
+import com.mashreq.bookings.RecurringBookingRepository;
+import com.mashreq.bookings.results.BookingSummaryResult;
 import com.mashreq.common.exceptions.NoRoomsAvailableException;
 import com.mashreq.common.TimeUtils;
 import com.mashreq.rooms.results.RoomResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Service for managing rooms, including retrieving available rooms and their capacities.
@@ -20,14 +30,23 @@ import java.util.stream.Collectors;
 public class RoomService {
 
   private final RoomRepository roomRepository;
+  private final BookingRepository bookingRepository;
+  private final RecurringBookingRepository recurringBookingRepository;
 
   /**
-   * Constructs a RoomService with the given RoomRepository.
+   * Constructs a new RoomService instance.
    *
-   * @param roomRepository the repository for accessing room data
+   * @param roomRepository             the repository for accessing room data
+   * @param bookingRepository          the repository for accessing booking data
+   * @param recurringBookingRepository the repository for accessing recurring booking data
    */
-  public RoomService(RoomRepository roomRepository) {
+  public RoomService(
+      RoomRepository roomRepository,
+      BookingRepository bookingRepository,
+      RecurringBookingRepository recurringBookingRepository) {
     this.roomRepository = roomRepository;
+    this.bookingRepository = bookingRepository;
+    this.recurringBookingRepository = recurringBookingRepository;
   }
 
   /**
@@ -58,11 +77,31 @@ public class RoomService {
       log.debug("Fetching all rooms from the repository.");
       rooms = roomRepository.findAll();
     }
+    List<UUID> roomIds = rooms.parallelStream().map(Room::getId).toList();
+
+    LocalDate today = LocalDate.now();
+    // Fetch bookings and recurring bookings separately
+    List<Booking> bookings = bookingRepository.findByRoom_IdInAndToday(roomIds, today);
+    List<RecurringBooking> recurringBookings = recurringBookingRepository.findByRoom_IdIn(roomIds);
+
+    // Combine bookings and recurring bookings into a single map by room ID
+    Map<UUID, List<BookingSummaryResult>> bookingSummaryByRoom =
+        Stream.concat(
+                  bookings.stream().map(BookingSummaryResult::toResult),
+                  recurringBookings.stream().map(BookingSummaryResult::toResult)
+              )
+              .collect(Collectors.groupingBy(BookingSummaryResult::roomId));
 
     // Convert rooms to RoomResult
-    List<RoomResult> roomResults = rooms.stream()
-                                        .map(room -> new RoomResult(room, null, null))
-                                        .collect(Collectors.toList());
+    List<RoomResult> roomResults =
+        rooms.stream()
+             .map(room -> {
+               List<BookingSummaryResult> bookingSummaries =
+                   bookingSummaryByRoom.getOrDefault(room.getId(), List.of());
+               bookingSummaries.sort(Comparator.comparing(BookingSummaryResult::startTime)); // Assuming BookingSummaryResult has a method to compare start times
+               return new RoomResult(room, bookingSummaries, null);
+             })
+             .collect(Collectors.toList());
 
     log.debug("Retrieved {} rooms.", roomResults.size());
     return roomResults;
