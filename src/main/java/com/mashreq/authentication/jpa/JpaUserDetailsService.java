@@ -1,6 +1,7 @@
 package com.mashreq.authentication.jpa;
 
 import com.mashreq.security.AuthenticatedUser;
+import com.mashreq.security.BaseUserDetailsService;
 import com.mashreq.users.User;
 import com.mashreq.users.UserRepository;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @Qualifier("jpaUserDetailsService")
-public class JpaUserDetailsService implements UserDetailsService {
+public class JpaUserDetailsService extends BaseUserDetailsService implements UserDetailsService {
 
   private final UserRepository userRepository;
 

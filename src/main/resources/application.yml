@@ -1,5 +1,5 @@
 environment:
-  name: default
+  name: ${env.ENVIRONMENT:local}
 
 app:
   jwt:

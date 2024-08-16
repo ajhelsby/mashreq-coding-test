@@ -24,7 +24,6 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
       AuthenticationException authException)
       throws IOException {
 
-    // Here you can place any message you want
     log.info("Handling AuthenticationEntryPoint error {}", authException.getMessage());
     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
   }

@@ -7,10 +7,8 @@ import jakarta.servlet.ServletResponse;
 import java.io.IOException;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
@@ -27,8 +25,6 @@ import org.springframework.web.filter.GenericFilterBean;
  * <p>Override protected method if you need to customise anything.
  *
  */
-@Configuration
-@EnableWebSecurity
 public class BaseSecurityConfig {
 
   public static final String[] PUBLIC = new String[]{
