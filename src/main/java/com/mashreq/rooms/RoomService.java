@@ -5,12 +5,9 @@ import com.mashreq.bookings.BookingRepository;
 import com.mashreq.bookings.RecurringBooking;
 import com.mashreq.bookings.RecurringBookingRepository;
 import com.mashreq.bookings.results.BookingSummaryResult;
-import com.mashreq.common.exceptions.NoRoomsAvailableException;
 import com.mashreq.common.TimeUtils;
+import com.mashreq.common.exceptions.NoRoomsAvailableException;
 import com.mashreq.rooms.results.RoomResult;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,6 +18,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * Service for managing rooms, including retrieving available rooms and their capacities.
@@ -55,8 +54,9 @@ public class RoomService {
    *
    * @param startTime      the start time of the range to check availability (can be null)
    * @param endTime        the end time of the range to check availability (can be null)
-   * @param numberOfPeople
-   * @return a list of RoomResult objects representing rooms either within the time range or all rooms
+   * @param numberOfPeople optional number of people the room search would be used for
+   * @return a list of RoomResult objects representing rooms either within the time range or
+   * all rooms
    * @throws IllegalArgumentException if endTime is provided without startTime or vice versa
    */
   public List<RoomResult> getRooms(
@@ -67,11 +67,19 @@ public class RoomService {
     List<Room> rooms;
     boolean hasTimeParams = validateTimeParameters(startTime, endTime);
     int numOfPeople = numberOfPeople == null ? 0 : numberOfPeople.intValue();
+
     if (hasTimeParams) {
       log.debug("Fetching available rooms for time range from {} to {}.", startTime, endTime);
       LocalTime startTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(startTime);
       LocalTime endTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(endTime);
-      rooms = roomRepository.findAvailableRooms(startTime, endTime, startTimeLocal, endTimeLocal, numOfPeople);
+      rooms =
+          roomRepository.findAvailableRooms(
+              startTime,
+              endTime,
+              startTimeLocal,
+              endTimeLocal,
+              numOfPeople
+          );
 
     } else {
       log.debug("Fetching all rooms from the repository.");
@@ -80,6 +88,7 @@ public class RoomService {
     List<UUID> roomIds = rooms.parallelStream().map(Room::getId).toList();
 
     LocalDate today = LocalDate.now();
+
     // Fetch bookings and recurring bookings separately
     List<Booking> bookings = bookingRepository.findByRoom_IdInAndToday(roomIds, today);
     List<RecurringBooking> recurringBookings = recurringBookingRepository.findByRoom_IdIn(roomIds);
@@ -98,7 +107,7 @@ public class RoomService {
              .map(room -> {
                List<BookingSummaryResult> bookingSummaries =
                    bookingSummaryByRoom.getOrDefault(room.getId(), List.of());
-               bookingSummaries.sort(Comparator.comparing(BookingSummaryResult::startTime)); // Assuming BookingSummaryResult has a method to compare start times
+               bookingSummaries.sort(Comparator.comparing(BookingSummaryResult::startTime));
                return new RoomResult(room, bookingSummaries, null);
              })
              .collect(Collectors.toList());
@@ -119,19 +128,41 @@ public class RoomService {
   public Room getAvailableRoomWithOptimumCapacity(
       LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
 
-    log.debug("Searching for available rooms from {} to {} for {} people.", startTime, endTime, numberOfPeople);
+    log.debug(
+        "Searching for available rooms from {} to {} for {} people.",
+        startTime,
+        endTime,
+        numberOfPeople);
+
     LocalTime startTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(startTime);
     LocalTime endTimeLocal = TimeUtils.convertLocalDateTimeToLocalTime(endTime);
 
-    Optional<Room> roomOptional = roomRepository.findBestAvailableRoom(startTime, endTime, startTimeLocal, endTimeLocal, numberOfPeople);
+    Optional<Room> roomOptional =
+        roomRepository.findBestAvailableRoom(
+            startTime,
+            endTime,
+            startTimeLocal,
+            endTimeLocal,
+            numberOfPeople
+        );
 
     if (roomOptional.isEmpty()) {
-      log.warn("No available room found for the given time range: {} to {} with capacity for {} people.", startTime, endTime, numberOfPeople);
+      log.warn(
+          "No available room found for the given time range: {} to {} with capacity for {} people.",
+          startTime,
+          endTime,
+          numberOfPeople
+      );
       throw new NoRoomsAvailableException(startTime, endTime, numberOfPeople);
     }
 
     Room room = roomOptional.get();
-    log.info("Found available room with ID {} for the time range: {} to {}.", room.getId(), startTime, endTime);
+    log.info(
+        "Found available room with ID {} for the time range: {} to {}.",
+        room.getId(),
+        startTime,
+        endTime
+    );
     return room;
   }
 

@@ -8,7 +8,13 @@ import java.time.LocalDateTime;
  */
 public class NoRoomsAvailableException extends RuntimeException {
 
-  public NoRoomsAvailableException(LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
-    super(I18n.getMessage("error.rooms.notAvailable", startTime.toString(), endTime.toString(), numberOfPeople));
+  public NoRoomsAvailableException(
+      LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
+    super(I18n.getMessage(
+        "error.rooms.notAvailable",
+        startTime.toString(),
+        endTime.toString(),
+        numberOfPeople
+    ));
   }
 }

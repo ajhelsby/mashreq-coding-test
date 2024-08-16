@@ -1,9 +1,9 @@
 package com.mashreq.bookings.validators;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import com.mashreq.rooms.RoomService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class NumberOfPeopleValidator implements ConstraintValidator<ValidNumberOfPeople, Integer> {
 

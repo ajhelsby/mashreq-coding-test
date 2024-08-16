@@ -1,16 +1,13 @@
 package com.mashreq.authentication.jpa;
 
 import com.mashreq.security.BaseSecurityConfig;
-import com.mashreq.security.SecurityUtils;
 import com.mashreq.security.SimpleAccessDeniedHandler;
 import com.mashreq.security.SimpleAuthenticationEntryPoint;
 import com.mashreq.security.jwt.JwsService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -57,7 +54,8 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(this::configureExceptionHandling)
         .authorizeHttpRequests(this::configureAuthorization)
         .addFilterBefore(new JwtAuthenticationFilter(userDetailsService, jwsService),
@@ -97,13 +95,15 @@ public class JpaSecurityConfig extends BaseSecurityConfig {
 
   public AuthenticationEntryPoint authenticationErrorHandler() {
     return (request, response, authException) -> {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: " + authException.getMessage());
+      response.sendError(
+          HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: " + authException.getMessage());
     };
   }
 
   public AccessDeniedHandler accessDeniedHandler() {
     return (request, response, accessDeniedException) -> {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden: " + accessDeniedException.getMessage());
+      response.sendError(
+          HttpServletResponse.SC_FORBIDDEN, "Forbidden: " + accessDeniedException.getMessage());
     };
   }
 }

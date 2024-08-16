@@ -50,7 +50,8 @@ public class AuthController extends BaseApiV1Controller {
   }
 
   /**
-   * Handle user login. Once user successfully authenticated generate JWT token and return with user details.
+   * Handle user login. Once user successfully authenticated generate JWT token
+   * and return with user details.
    *
    * @param loginPayload a login credentials
    * @return a token with user details

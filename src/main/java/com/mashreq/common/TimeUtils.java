@@ -2,19 +2,19 @@ package com.mashreq.common;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.LocalDateTime;
 
 public final class TimeUtils {
   /**
    * Converts an {@link LocalDateTime} to a {@link LocalTime} using the system default time zone.
    *
-   * @param LocalDateTime the {@link LocalDateTime} to convert
+   * @param localDateTime the {@link LocalDateTime} to convert
    * @return the corresponding {@link LocalTime}
    */
-  public static LocalTime convertLocalDateTimeToLocalTime(LocalDateTime LocalDateTime) {
-    return LocalDateTime.atZone(ZoneId.systemDefault()).toLocalTime();
+  public static LocalTime convertLocalDateTimeToLocalTime(LocalDateTime localDateTime) {
+    return localDateTime.atZone(ZoneId.systemDefault()).toLocalTime();
   }
 
   /**

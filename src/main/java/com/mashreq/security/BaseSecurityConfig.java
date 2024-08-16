@@ -23,7 +23,6 @@ import org.springframework.web.filter.GenericFilterBean;
  * Default security configuration for the application.
  *
  * <p>Override protected method if you need to customise anything.
- *
  */
 public class BaseSecurityConfig {
 
@@ -56,7 +55,8 @@ public class BaseSecurityConfig {
     http
         .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(this::configureExceptionHandling)
         .logout(LogoutConfigurer::disable)
         .authorizeHttpRequests(this::configureAuthorization)
@@ -78,14 +78,15 @@ public class BaseSecurityConfig {
    * Configure URLs for authorization.
    */
   public void configureAuthorization(
-      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authz) {
+      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authz
+  ) {
     authz
         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
         .requestMatchers(PUBLIC).permitAll()
         .anyRequest().authenticated();
   }
 
-  public class CustomTokenAuthenticationFilter extends GenericFilterBean {
+  public static class CustomTokenAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException {

@@ -123,7 +123,8 @@ public class JpaAuthenticationService extends AbstractAuthenticationService {
     Objects.requireNonNull(password);
 
     try {
-      return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+      return authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(username, password));
     } catch (BadCredentialsException e) {
       log.warn(e.getMessage(), e);
       throw new AuthenticationException("Bad credentials", e);
