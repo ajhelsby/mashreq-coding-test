@@ -22,7 +22,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.checkstyle.version>3.2.1</maven.checkstyle.version>
+        <maven.checkstyle.version>3.4.0</maven.checkstyle.version>
         <springdoc.version>1.7.0</springdoc.version>
         <nimbus-jose-jwt.version>9.30.1</nimbus-jose-jwt.version>
         <passay.version>1.6.4</passay.version>
