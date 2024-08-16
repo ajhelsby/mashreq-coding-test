@@ -382,6 +382,8 @@ a single endpoint for querying room availability:
     - `startDate` - The start date for the room availability query.
     - `endDate` - The end date for the room availability query.
     - `numberOfPeople` - The number of people requiring the room.
+- **Headers**:
+    - Authorization: Token retrieved from login
 
 #### Functionality
 
@@ -409,7 +411,8 @@ This section details the available endpoints and the functionality behind them:
 
 - **POST /api/v1/bookings**: Creates a new booking.
 - **DELETE /api/v1/bookings/:id**: Cancels an existing booking.
-
+- **Headers**:
+  - Authorization: Token retrieved from login
 #### Booking Creation
 
 The booking creation endpoint handles the core functionality of the application and includes a range of validations to

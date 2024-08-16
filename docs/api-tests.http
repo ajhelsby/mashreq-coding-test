@@ -22,17 +22,22 @@ Content-Type: application/json
 }
 
 ### List Rooms
-GET http://127.0.0.1:8080/api/v1/rooms?startTime=2024-08-16T8:00:00&endTime=2024-08-16T8:15:00&numberOfPeople=2
-Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3NTQ1MDQsIm1hc2hyZXEtaWF0IjoxNzIzNzUyNzA0NTY1fQ.uqM8mmMUU91k4gb_dMCrlabHmr9xZZKCl0gK13Y4UXI"
+GET http://127.0.0.1:8080/api/v1/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3OTM5MzksIm1hc2hyZXEtaWF0IjoxNzIzNzkyMTM5NzAxfQ.WekGo0-CHjZgow13oSPyW7eDTDi_FlyXfTfMPY82tEY
+
+### List Rooms With Filters
+GET http://127.0.0.1:8080/api/v1/rooms?startTime=2024-08-16T08:00:00&endTime=2024-08-16T08:15:00&numberOfPeople=2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3OTM5MzksIm1hc2hyZXEtaWF0IjoxNzIzNzkyMTM5NzAxfQ.WekGo0-CHjZgow13oSPyW7eDTDi_FlyXfTfMPY82tEY
 
 
 ### Create Booking
 POST http://127.0.0.1:8080/api/v1/bookings
-Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3NTQxMDksIm1hc2hyZXEtaWF0IjoxNzIzNzUyMzA5Njk5fQ.Xpz9cuOYWPSJv_ghaZS2FKQq3u9QInYAka7c0I-zAXE"
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3OTM5MzksIm1hc2hyZXEtaWF0IjoxNzIzNzkyMTM5NzAxfQ.WekGo0-CHjZgow13oSPyW7eDTDi_FlyXfTfMPY82tEY
+Content-Type: application/json
 
 {
-    "startTime": "2024-08-15T14:00:00",
-    "endTime": "2024-08-15T14:15:00",
+    "startTime": "2024-08-16T14:00:00",
+    "endTime": "2024-08-16T14:15:00",
     "name": "Important meeting",
     "description": "Meeting information",
     "numberOfPeople": 2
@@ -40,4 +45,4 @@ Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5
 
 ### Cancel Booking
 DELETE http://127.0.0.1:8080/api/v1/bookings/bookingId
-Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3NTQxMDksIm1hc2hyZXEtaWF0IjoxNzIzNzUyMzA5Njk5fQ.Xpz9cuOYWPSJv_ghaZS2FKQq3u9QInYAka7c0I-zAXE"
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoIiwic3ViIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE3MjM3OTM5MzksIm1hc2hyZXEtaWF0IjoxNzIzNzkyMTM5NzAxfQ.WekGo0-CHjZgow13oSPyW7eDTDi_FlyXfTfMPY82tEY

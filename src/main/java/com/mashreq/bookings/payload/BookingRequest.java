@@ -47,6 +47,10 @@ public record BookingRequest(
                              .build();
     booking.setRoom(room);
     booking.setUser(user);
+    booking.setName(payload.name);
+    booking.setDescription(payload.description);
+    booking.setCreatedOn(LocalDateTime.now());
+    booking.setModifiedOn(LocalDateTime.now());
     return booking;
   }
 }
