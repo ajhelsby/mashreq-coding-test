@@ -1,0 +1,292 @@
+{
+	"info": {
+		"_postman_id": "f72f83dc-2ac9-4ecc-9b04-98ffa8f27198",
+		"name": "Mashreq Coding Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3332809"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "signup",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm."
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"8U%qz!v^io^P3uqN4#Ba\",\n    \"confirmPassword\": \"8U%qz!v^io^P3uqN4#Ba\",\n    \"firstName\": \"First\",\n    \"lastName\": \"Last\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{baseUrl}}{{apiVersion}}/auth/signup",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{baseUrl}}{{apiVersion}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body as JSON",
+									"var jsonData = pm.response.json();",
+									"",
+									"// Set an environment variable from the response data",
+									"pm.environment.set(\"token\", jsonData.tokens.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"8U%qz!v^io^P3uqN4#Ba\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{baseUrl}}{{apiVersion}}/auth/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{baseUrl}}{{apiVersion}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "rooms",
+			"item": [
+				{
+					"name": "rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{baseUrl}}{{apiVersion}}/rooms?startTime=2024-08-16T14:00:00&endTime=2024-08-16T14:15:00&numberOfPeople=2",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{baseUrl}}{{apiVersion}}"
+							],
+							"path": [
+								"rooms"
+							],
+							"query": [
+								{
+									"key": "startTime",
+									"value": "2024-08-16T14:00:00"
+								},
+								{
+									"key": "endTime",
+									"value": "2024-08-16T14:15:00"
+								},
+								{
+									"key": "numberOfPeople",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "bookings",
+			"item": [
+				{
+					"name": "createBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body as JSON",
+									"var jsonData = pm.response.json();",
+									"",
+									"// Set an environment variable from the response data",
+									"pm.environment.set(\"bookingId\", jsonData.id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startTime\": \"2024-08-15T14:00:00\",\n    \"endTime\": \"2024-08-15T14:15:00\",\n    \"name\": \"Important meeting\",\n    \"description\": \"Meeting information\",\n    \"numberOfPeople\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{baseUrl}}{{apiVersion}}/bookings",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{baseUrl}}{{apiVersion}}"
+							],
+							"path": [
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancelBooking",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startTime\": \"2024-08-15T14:00:00\",\n    \"endTime\": \"2024-08-15T14:15:00\",\n    \"name\": \"Important meeting\",\n    \"description\": \"Meeting information\",\n    \"numberOfPeople\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{baseUrl}}{{apiVersion}}/bookings/{{bookingId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{baseUrl}}{{apiVersion}}"
+							],
+							"path": [
+								"bookings",
+								"{{bookingId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}

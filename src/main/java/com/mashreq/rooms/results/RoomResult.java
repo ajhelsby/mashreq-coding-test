@@ -9,6 +9,7 @@ import java.util.List;
 public record RoomResult(
     Room room,
     List<BookingSummaryResult> bookingsToday,
+    // Todo available slot could also be returned
     List<AvailableRange> availableRangeToday
 ) {
 }
