@@ -44,12 +44,17 @@ public class OpenApiSecurityConfig {
     http
         .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .logout(LogoutConfigurer::disable)
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(OPENAPI_ENDPOINTS).hasRole("OPENAPI")
             .anyRequest().authenticated())
-        .addFilterBefore(new BasicAuthenticationFilter(openApiAuthenticationManager(http, passwordEncoder)), BasicAuthenticationFilter.class); // Configures basic authentication
+        .addFilterBefore(
+            new BasicAuthenticationFilter(
+                openApiAuthenticationManager(http, passwordEncoder)),
+            BasicAuthenticationFilter.class
+        ); // Configures basic authentication
 
     return http.build();
   }
@@ -60,7 +65,9 @@ public class OpenApiSecurityConfig {
   @Bean
   public AuthenticationManager openApiAuthenticationManager(
       HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
-    AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+    AuthenticationManagerBuilder authenticationManagerBuilder =
+        http.getSharedObject(AuthenticationManagerBuilder.class);
+
     authenticationManagerBuilder
         .inMemoryAuthentication()
         .withUser(openapiUser)

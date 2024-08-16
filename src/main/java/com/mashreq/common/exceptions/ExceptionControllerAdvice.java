@@ -92,32 +92,32 @@ public class ExceptionControllerAdvice {
   public Map<String, String> validation(MethodArgumentNotValidException ex) {
     Map<String, String> errors = new HashMap<>();
     ex.getBindingResult()
-      .getAllErrors()
-      .forEach(error -> {
-        String errorMessage = error.getDefaultMessage();
+        .getAllErrors()
+        .forEach(error -> {
+          String errorMessage = error.getDefaultMessage();
 
-        if (error instanceof FieldError) {
-          // Handle field specific errors
-          FieldError fieldError = (FieldError) error;
-          String fieldName = fieldError.getField();
-          errors.put(fieldName, errorMessage);
+          if (error instanceof FieldError fieldError) {
+            // Handle field specific errors
+            String fieldName = fieldError.getField();
+            errors.put(fieldName, errorMessage);
 
-        } else if (error instanceof ObjectError) {
-          // Handle non-field-specific errors here if needed
-          String objectName = ((ObjectError) error).getObjectName();
-          // Convert objectName to camelCase
-          String lowerCamelObjectName = CaseFormat.UPPER_CAMEL
-              .to(CaseFormat.LOWER_CAMEL, objectName);
-          errors.put(lowerCamelObjectName, errorMessage);
-        }
-      });
+          } else {
+            // Handle non-field-specific errors here if needed
+            String objectName = ((ObjectError) error).getObjectName();
+            // Convert objectName to camelCase
+            String lowerCamelObjectName = CaseFormat.UPPER_CAMEL
+                .to(CaseFormat.LOWER_CAMEL, objectName);
+            errors.put(lowerCamelObjectName, errorMessage);
+          }
+        });
     return errors;
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<String> unprocessedEntity(HttpMessageNotReadableException ex) {
     log.error("HttpMessageNotReadableException exception: {}", ex.getMessage());
-    return new ResponseEntity<>("Cannot process incoming request", HttpStatus.UNPROCESSABLE_ENTITY);
+    return new ResponseEntity<>(
+        "Cannot process incoming request", HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
   /**

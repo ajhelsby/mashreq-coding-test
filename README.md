@@ -355,6 +355,12 @@ booking. Below is a detailed overview of the key features included in the applic
 you can explore the full API specification and interact with the API endpoints through the Swagger interface available
 at [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html).
 
+Swagger is protected by basic auth and the credentials are provided by setting the env variables below:
+```env
+OPENAPI_USERNAME=
+OPENAPI_PASSWORD=
+```
+
 ### Auth
 
 While not a requirement for the test, I have implemented a simple database authentication mechanism using the built-in

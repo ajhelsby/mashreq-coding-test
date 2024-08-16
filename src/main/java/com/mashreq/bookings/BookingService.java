@@ -17,7 +17,6 @@ import com.mashreq.users.UserService;
 import jakarta.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.springframework.dao.OptimisticLockingFailureException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,7 +63,8 @@ public class BookingService {
    * @param authenticatedUser the authenticated user making the booking
    * @param payload           the details of the booking request
    * @return a result representing the outcome of the booking creation
-   * @throws NoRoomsAvailableException if no rooms are available for the requested time and capacity
+   * @throws NoRoomsAvailableException if no rooms are available for
+   *                                   the requested time and capacity
    */
   @Transactional
   public BookingResult createBooking(AuthenticatedUser authenticatedUser, BookingRequest payload)
@@ -74,7 +74,8 @@ public class BookingService {
     while (retryCount < MAX_RETRIES) {
       try {
         User user = userService.getUserByUsername(authenticatedUser.getUsername());
-        Room room = roomService.getAvailableRoomWithOptimumCapacity(payload.startTime(), payload.endTime(), payload.numberOfPeople());
+        Room room = roomService.getAvailableRoomWithOptimumCapacity(
+            payload.startTime(), payload.endTime(), payload.numberOfPeople());
 
         Booking booking = BookingRequest.toBooking(payload, user, room);
         bookingRepository.save(booking);
@@ -85,15 +86,20 @@ public class BookingService {
         retryCount++;
         if (retryCount >= MAX_RETRIES) {
           log.error("Failed to create booking after " + MAX_RETRIES + " attempts", e);
-          throw new BookingFailedException(payload.startTime(), payload.endTime(), payload.numberOfPeople());
+          throw new BookingFailedException(
+              payload.startTime(), payload.endTime(), payload.numberOfPeople());
         }
       } catch (NoRoomsAvailableException e) {
-        log.warn("No available rooms found for the given time and capacity. Checking recurring bookings...");
-        checkRecurringMaintenanceBooking(payload.startTime(), payload.endTime(), payload.numberOfPeople());
+        log.warn(
+            "No available rooms found for the given time and capacity. Checking recurring bookings."
+        );
+        checkRecurringMaintenanceBooking(
+            payload.startTime(), payload.endTime(), payload.numberOfPeople());
         throw e; // Re-throw to signal failure
       }
     }
-    throw new BookingFailedException(payload.startTime(), payload.endTime(), payload.numberOfPeople());
+    throw new BookingFailedException(
+        payload.startTime(), payload.endTime(), payload.numberOfPeople());
   }
 
   /**
@@ -102,7 +108,8 @@ public class BookingService {
    * @param startTime      the start time of the booking request
    * @param endTime        the end time of the booking request
    * @param numberOfPeople the number of people for the booking
-   * @throws MaintenanceInProgressException if there is an ongoing maintenance booking that overlaps with the request
+   * @throws MaintenanceInProgressException if there is an ongoing maintenance booking
+   *                                        that overlaps with the request
    */
   private void checkRecurringMaintenanceBooking(
       LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople)
@@ -113,9 +120,10 @@ public class BookingService {
     LocalTime startLocalTime = TimeUtils.convertLocalDateTimeToLocalTime(startTime);
     LocalTime endLocalTime = TimeUtils.convertLocalDateTimeToLocalTime(endTime);
 
-    List<RecurringBooking> recurringBookings = recurringBookingRepository.findRecurringMaintenanceBooking(
-        startLocalTime, endLocalTime, numberOfPeople
-    );
+    List<RecurringBooking> recurringBookings =
+        recurringBookingRepository.findRecurringMaintenanceBooking(
+            startLocalTime, endLocalTime, numberOfPeople
+        );
 
     if (!recurringBookings.isEmpty()) {
       // If recurring maintenance found, throw an exception
@@ -129,7 +137,8 @@ public class BookingService {
    * @param authenticatedUser the user requesting the cancellation
    * @param bookingId         the ID of the booking to be cancelled
    * @throws ResourceNotFoundException if the booking does not exist
-   * @throws AuthenticationException   if the authenticated user is not authorized to cancel the booking
+   * @throws AuthenticationException   if the authenticated user is not
+   *                                   authorized to cancel the booking
    */
   @Transactional
   public void cancelBooking(AuthenticatedUser authenticatedUser, UUID bookingId) {
@@ -139,7 +148,8 @@ public class BookingService {
     // Check if the booking exists
     Booking booking = bookingOptional.orElseThrow(() -> {
       log.error("Booking with ID {} not found.", bookingId);
-      return new ResourceNotFoundException(I18n.getMessage("error.booking.notFound", bookingId));
+      return new ResourceNotFoundException(
+          I18n.getMessage("error.booking.notFound", bookingId));
     });
 
     // Retrieve the user making the request
@@ -147,8 +157,10 @@ public class BookingService {
 
     // Check if the authenticated user is the owner of the booking
     if (!booking.getUser().equals(user)) {
-      log.warn("User {} is not authorized to cancel booking with ID {}.", user.getEmail(), bookingId);
-      throw new AuthenticationException(I18n.getMessage("error.booking.unauthorized", bookingId));
+      log.warn(
+          "User {} is not authorized to cancel booking with ID {}.", user.getEmail(), bookingId);
+      throw new AuthenticationException(
+          I18n.getMessage("error.booking.unauthorized", bookingId));
     }
 
     // Update the status of the booking

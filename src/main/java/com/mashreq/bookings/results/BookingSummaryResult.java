@@ -28,7 +28,15 @@ public record BookingSummaryResult(
     int numberOfPeople = booking.getNumberOfPeople();
 
     // Create and return a new BookingResult instance
-    return new BookingSummaryResult(booking.getName(), booking.getDescription(), startTime, endTime, user, numberOfPeople, BookingType.MEETING, room.getId());
+    return new BookingSummaryResult(
+        booking.getName(),
+        booking.getDescription(),
+        startTime,
+        endTime,
+        user,
+        numberOfPeople,
+        BookingType.MEETING,
+        room.getId());
   }
 
   public static BookingSummaryResult toResult(RecurringBooking booking) {
@@ -39,6 +47,15 @@ public record BookingSummaryResult(
     Room room = booking.getRoom();
 
     // Create and return a new BookingResult instance
-    return new BookingSummaryResult(booking.getName(), booking.getDescription(), startTime, endTime, user, 0, booking.getBookingType(), room.getId());
+    return new BookingSummaryResult(
+        booking.getName(),
+        booking.getDescription(),
+        startTime,
+        endTime,
+        user,
+        0,
+        booking.getBookingType(),
+        room.getId()
+    );
   }
 }

@@ -9,13 +9,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for managing bookings.
@@ -46,7 +49,8 @@ public class BookingController extends BaseApiV1Controller {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  @Operation(summary = "Create a new booking", description = "Creates a new booking with the given details.")
+  @Operation(summary = "Create a new booking",
+      description = "Creates a new booking with the given details.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Successfully created the booking"),
       @ApiResponse(responseCode = "400", description = "Invalid input provided")
@@ -67,7 +71,8 @@ public class BookingController extends BaseApiV1Controller {
    * @return a response indicating the booking was successfully canceled
    */
   @DeleteMapping(path = "/bookings/{id}")
-  @Operation(summary = "Cancel a booking", description = "Cancels an existing booking identified by the ID.")
+  @Operation(summary = "Cancel a booking",
+      description = "Cancels an existing booking identified by the ID.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "204", description = "Successfully canceled the booking"),
       @ApiResponse(responseCode = "404", description = "Booking not found")

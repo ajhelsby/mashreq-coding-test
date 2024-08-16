@@ -1,7 +1,7 @@
 package com.mashreq.bookings.results;
 
-import com.mashreq.bookings.BookingType;
 import com.mashreq.bookings.Booking;
+import com.mashreq.bookings.BookingType;
 import com.mashreq.rooms.Room;
 import com.mashreq.users.User;
 import java.time.LocalDateTime;
@@ -27,6 +27,16 @@ public record BookingResult(
     int numberOfPeople = booking.getNumberOfPeople();
 
     // Create and return a new BookingResult instance
-    return new BookingResult(booking.getId(), booking.getName(), booking.getDescription(), startTime, endTime, user, room, numberOfPeople, BookingType.MEETING);
+    return new BookingResult(
+        booking.getId(),
+        booking.getName(),
+        booking.getDescription(),
+        startTime,
+        endTime,
+        user,
+        room,
+        numberOfPeople,
+        BookingType.MEETING
+    );
   }
 }

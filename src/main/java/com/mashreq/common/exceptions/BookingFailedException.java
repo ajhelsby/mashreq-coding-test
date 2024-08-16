@@ -8,7 +8,14 @@ import java.time.LocalDateTime;
  */
 public class BookingFailedException extends RuntimeException {
 
-  public BookingFailedException(LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
-    super(I18n.getMessage("error.rooms.bookingFailed", startTime.toString(), endTime.toString(), numberOfPeople));
+  public BookingFailedException(
+      LocalDateTime startTime, LocalDateTime endTime, int numberOfPeople) {
+
+    super(I18n.getMessage(
+        "error.rooms.bookingFailed",
+        startTime.toString(),
+        endTime.toString(),
+        numberOfPeople
+    ));
   }
 }
