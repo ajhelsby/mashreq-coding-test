@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record BookingSummaryResult(
+    UUID id,
     String name,
     String description,
     LocalDateTime startTime,
@@ -29,6 +30,7 @@ public record BookingSummaryResult(
 
     // Create and return a new BookingResult instance
     return new BookingSummaryResult(
+        booking.getId(),
         booking.getName(),
         booking.getDescription(),
         startTime,
@@ -48,6 +50,7 @@ public record BookingSummaryResult(
 
     // Create and return a new BookingResult instance
     return new BookingSummaryResult(
+        booking.getId(),
         booking.getName(),
         booking.getDescription(),
         startTime,
