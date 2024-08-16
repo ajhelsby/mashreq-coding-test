@@ -250,7 +250,14 @@ The application will start, and you can access it at http://localhost:8080.
 #### Option 2: Running with Docker
 
 Docker provides a consistent environment to run applications, making it easier to manage dependencies and
-configurations.
+configurations. For this option the code must have already been packaged into a `.jar`, this can be done
+by running the following command.
+
+```bash
+mvn clean package
+```
+
+Alternatively you can pull the docker image from my dockerhub repository `ajhelsby/mashreq-coding-test`
 
 **1. Ensure Docker is installed:**
 
@@ -267,7 +274,7 @@ If Docker is not installed, download and install it from the Docker website.
 Use the following command to build a Docker image of the application:
 
 ```bash
-docker build -f docker/Docerfile -t mashreq-coding-test .
+docker build -f docker/Dockerfile -t mashreq-coding-test .
 ````
 
 Ensure you are in the base folder of the repository when running the above
@@ -279,6 +286,7 @@ Start the application in a Docker container with the following command:
 ```bash
 docker run -p 8080:8080 mashreq-coding-test
 ```
+Ensure the env variables are set as suggested above.
 
 The application will be available at http://localhost:8080.
 
@@ -305,7 +313,7 @@ Navigate to the directory containing the `docker/docker-compose.yml` file and st
 command:
 
 ```bash
-docker-compose up -d
+docker compose -f docker-compose.yml up
 ```
 
 This command will start both the PostgreSQL database and the application in their respective containers. The application
@@ -418,6 +426,8 @@ ensure correct and optimal booking:
 - **First Come, First Served:** To enforce a first-come, first-served policy, the endpoint utilizes transactional
   management and optimistic locking. This approach helps maintain consistency and avoid conflicts when multiple booking
   requests are processed simultaneously.
+- **Optimum room allocation:** Creating a booking does not require a room to be passed, instead it will find the best
+  suited room based on the time and number of people attending the meeting.
 
 #### Booking Cancellation
 
