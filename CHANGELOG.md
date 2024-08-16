@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.0](https://github.com/ajhelsby/mashreq-coding-test/compare/v1.1.0...v1.2.0) (2024-08-16)
+
+
+### Bug Fixes
+
+* **auth:** Fix all auth ([f178cac](https://github.com/ajhelsby/mashreq-coding-test/commit/f178cac6e6693335131214296316712b0d3bd90c))
+* **auth:** Fix all auth issues outstanding ([40ecc28](https://github.com/ajhelsby/mashreq-coding-test/commit/40ecc28a87706c23388628b65a1255e98c8a02e5))
+* **booking-id:** Return booking id on room get ([599f2b7](https://github.com/ajhelsby/mashreq-coding-test/commit/599f2b744dd8ee80f8fc96b04d6fb496a8d5b536))
+* **checkstyle-issues:** Add to readme ([c83b2b6](https://github.com/ajhelsby/mashreq-coding-test/commit/c83b2b6c2388124908fe146815fbfc9ab5574a1a))
+* **checkstyle-issues:** Fix formatting issues after checkstyle failed ([5cde2c3](https://github.com/ajhelsby/mashreq-coding-test/commit/5cde2c3cd053e9fb74fa08cc7e2e444e8803108c))
+
+
+### Other
+
+* **main:** release 1.1.1-SNAPSHOT ([e895b4a](https://github.com/ajhelsby/mashreq-coding-test/commit/e895b4a796c08cc6b8adb76859aad9c7ce935516))
+
+
+### Build
+
+* **deps:** Bump com.nimbusds:nimbus-jose-jwt from 9.30.1 to 9.40 ([f02bc86](https://github.com/ajhelsby/mashreq-coding-test/commit/f02bc861eda09dff1ad99e9982a25150c1fa85dd))
+
 ## [1.1.0](https://github.com/ajhelsby/mashreq-coding-test/compare/v1.0.0...v1.1.0) (2024-08-16)
 
 
