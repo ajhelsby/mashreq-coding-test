@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/ajhelsby/mashreq-coding-test/compare/v1.2.0...v1.2.1) (2024-08-22)
+
+
+### Other
+
+* **main:** release 1.2.1-SNAPSHOT ([d0db387](https://github.com/ajhelsby/mashreq-coding-test/commit/d0db38760f895cf5f4a165ee2484f9c2e27cb06b))
+
 ## [1.2.0](https://github.com/ajhelsby/mashreq-coding-test/compare/v1.1.0...v1.2.0) (2024-08-16)
 
 
