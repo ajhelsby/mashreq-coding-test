@@ -24,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.checkstyle.version>3.4.0</maven.checkstyle.version>
         <springdoc.version>1.7.0</springdoc.version>
-        <nimbus-jose-jwt.version>9.40</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>9.41.1</nimbus-jose-jwt.version>
         <passay.version>1.6.4</passay.version>
         <spotbugs.version>4.8.6</spotbugs.version>
         <spring-dotenv.version>2.5.4</spring-dotenv.version>
